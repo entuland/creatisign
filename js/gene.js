@@ -72,10 +72,10 @@ var gene = {
 	
 	computePlacement: function() {
 		gene.placement.innerHTML = '';
-		var greendot = document.createElement('div');
-		greendot.title = 'Top of the resulting graphic (approx)';
-		greendot.classList.add('greendot');
-		gene.placement.appendChild(greendot);
+		gene.greendot = document.createElement('div');
+		gene.greendot.title = 'Top/extension of the resulting graphic (approx)';
+		gene.greendot.classList.add('greendot');
+		gene.placement.appendChild(gene.greendot);
 		var offset = parseFloat(gene.offset.value);
 		var zoffset = parseFloat(gene.zoffset.value);
 		var slices = parseInt(gene.slicecount.value);
@@ -134,8 +134,8 @@ var gene = {
 			gene.placement.appendChild(sign);
 		}
 		
-		greendot.style.left = '' + (-(zoffset-0.5) * 2) + 'em'
-		greendot.style.top = '' + (-offset * 2) + 'em'
+		gene.greendot.style.left = '' + ((zoffset - 0.5) * -2) + 'em'
+		gene.greendot.style.top = '' + (offset * -2) + 'em'
 	},
 	
 	loadsource: function() {
@@ -177,13 +177,13 @@ var gene = {
 			return;
 		}
 		var result = false;
-		var y = 0;
+		var start = 0;
 		var results = [];
 		var delta = 0;
 		
 		function attemptOutput(w, h) {
 			gene.errors = [];
-			result = gene.generateOutput(w, h, y, delta, slices);
+			result = gene.generateOutput(w, h, start, delta, slices);
 			if(gene.errors.length) {
 				// got errors
 				return false; // trigger exit from processSlices();
@@ -194,10 +194,12 @@ var gene = {
 				return true; // trigger break from loop;
 			}
 			++delta;
-			y = result.y;
+			start = result.y;
 		}
 		
-		var decide = null;
+		var decide;
+		var tw;
+		var th;
 		
 		if(!gene.autosize.checked) {
 			for(var s = 0; s < slices; ++s) {
@@ -217,14 +219,12 @@ var gene = {
 			}
 		} else {
 			var ratio = h / w;
-			decide = null;
-			var tw;
 			for(tw = 10; /* no limit */ ; tw += 10) {
 				// first pass, increase by 10 until run out of slices
-				var th = Math.round(tw * ratio);
+				th = Math.round(tw * ratio);
 				// console.log(["#1 attempting: ", tw, th, slices].join(', '));
 				delta = 0;
-				y = 0;
+				start = 0;
 				results = [];
 				var s;
 				for(s = 0; s < slices; ++s) {
@@ -241,7 +241,7 @@ var gene = {
 					}
 				}
 				if(result.y < th && s == slices) {
-					console.log('out of space');
+					// console.log('out of space');
 					// run out of space
 					break;
 				}
@@ -252,7 +252,7 @@ var gene = {
 				var th = Math.round(tw * ratio);
 				// console.log(["#2 attempting: ", tw, th, slices].join(', '));
 				delta = 0;
-				y = 0;
+				start = 0;
 				results = [];
 				var s;
 				var completed = false;
@@ -276,6 +276,7 @@ var gene = {
 				}
 			}
 		}
+		gene.greendot.style.height = '' + (2 * result.h * result.intro.vspacing * 1.03) + 'em'; 
 		for(var i in results) {
 			gene.displayResult(results[i]);
 		}			
@@ -366,11 +367,10 @@ var gene = {
 			}
 			offs = gene.prepareCodeOffsets(delta, side, y, intro);
 			if(output.length + line.length + offs.output.length > limit) {
-				--y;
+				offs = gene.prepareCodeOffsets(delta, side, y - 1, intro);
 				break;
 			}
-			line += '\r\n';
-			output += line;
+			output += line + '\r\n';
 		}
 		return {
 			output: offs.output + output.replace(/\r\n$/, ""),
@@ -385,6 +385,7 @@ var gene = {
 			offset: offs.offset,
 			zoffset: offs.zoffset,
 			side: side,
+			intro: intro,
 		};
 	},
 	
@@ -430,7 +431,7 @@ var gene = {
 	},
 	
 	prepareCodeOffsets: function(delta, side, lines, intro) {
-		var offset = intro.offset - lines * intro.vspacing;
+		var offset = intro.offset + 0.50 - intro.vspacing * 4.5 - lines * intro.vspacing * 1.01;
 		var zoffset = intro.zoffset;
 		var col = 0;
 		var row = 0;

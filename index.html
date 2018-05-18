@@ -1,14 +1,14 @@
 <!doctype html>
 <html>
 <head>
-	<title>CreatiSign Generator V2.5</title>
+	<title>CreatiSign Generator V2.6</title>
 	<meta charset="utf-8" />
 	<script src="js/color.js"></script>
 	<script src="js/gene.js"></script>
 	<link href="css/style.css" rel="stylesheet">
 </head>
 <body>
-<h1>CreatiSign Generator - V2.5</h1>
+<h1>CreatiSign Generator - V2.6</h1>
 <p><a href="http://entuland.com/creatisign">Latest live version</a> - <a href="https://github.com/entuland/creatisprites" target="_blank">All versions on GitHub</a></p>
 <p>This is a tool that lets you convert images into codes that you can put into Arc Signs in the game <a href="http://store.steampowered.com/app/280790" target="_blank">Creativerse</a>, free to play on Steam</p>
 <p>Select the image you want to convert to CreatiSign code (or drag it onto the file selector), then alter the settings as you please and click the green "Execute" button at the bottom-left corner of this page.</p>
@@ -90,18 +90,19 @@
 </div>
 <hr>
 <div id="placementcontainer">
+	<div id="grid">
+		<div id="placementpreview"></div>
+	</div>
 	<h2 style="text-align: center">Placement preview (approx)</h2>
 	<ul class="showhover">
 		<li>Signs (boxes with the number inside) are depicted seen from their <em>left</em> side
 		<li>(when an arc sign faces at you its <em>left</em> side is your <em>right</em> side)
 		<li>Offset goes from top (higher) to bottom (lower)
 		<li>Zoffset goes from left (higher) to right (lower)
-		<li>The green dot indicates the top of the resulting graphic (approx)
+		<li>The green rectangle indicates the top of the resulting graphic and will extend vertically after executing to preview the graphics' height (approx)
 		<li>A red sign indicates a sign that will very likely exceed the offset or zoffset limits
 		<li>In any case, the textareas will be clearly marked if they exceed any limit
 	</ul>
-	<div id="placementpreview">
-	</div>
 </div>
 
 <button id="execute">Execute</button>
@@ -172,6 +173,13 @@
 <div class="recipe">
 	<p><small>Changelog
 	<ul>
+		<li>V2.6:<ul>
+			<li>fixed overlapping, duplicated row across slides
+			<li>improved slide placement (they were slightly off even before the duplicated row)
+			<li>fixed line count in each textarea
+			<li>improved preview of sign placement
+			<li>added preview of graphic extension
+		</ul>
 		<li>V2.5:<ul>
 			<li>selecting / dragging an image shows its preview immediately
 			<li>added ability to arrange arc signs in different ways

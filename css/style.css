@@ -185,25 +185,31 @@ img, canvas {
 	background: #FF0;
 }
 .greendot {
-	width: 10px;
+	width: 5px;
 	height: 10px;
-	border-radius: 10px;
 	background: #0F0;
 	border: 1px solid black;
-	transform: translate(-50%, -50%);
 	position: absolute;
 	z-index: 10;
-	box-shadow: 0 0 5px 10px yellow;
+	margin-left: -2.5px;
+	margin-top: -2.5px;
+	box-shadow: 0 0 10px 5px rgba(255, 0, 255, 0.5);
+	box-sizing: border-box;
 }
 
 .showhover {
 	display: none;
 }
 
+#grid {
+	background: url(../img/grid.png) top left repeat;
+	background-size: 2em;
+	padding-left: 16em;
+	padding-top: 16em;
+}
+
 #placementpreview {
-	margin-left: 6em;
-	margin-top: 6em;
-	min-width: 34em;
+	min-width: 40em;
 	position: relative;
 }
 
