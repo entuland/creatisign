@@ -1,64 +1,32 @@
+'use strict';
+
 var gene = {
 	zoffset_min: -8,
 	zoffset_max: 8,
 	offset_min: -8,
 	offset_max: 8,
 
-	init: function() {
-		gene.placement = document.querySelector('#placementpreview');
-		gene.offset = document.querySelector('#offset');
-		gene.disposition = document.querySelector('#disposition');
-		gene.pixelsize = document.querySelector('#pixelsize');
-		gene.width = document.querySelector('#width');
-		gene.zoffset = document.querySelector('#zoffset');
-		gene.tweak = document.querySelector('#tweak');
-		gene.vtweak = document.querySelector('#vtweak');
-		gene.decimals = document.querySelector('#decimals');
-		gene.font = document.querySelector('#font');
-		
-		gene.fileselector = document.querySelector('#fileselector');
-		
-		gene.cover = document.querySelector('#cover');
-		gene.errormessages = document.querySelector('#errors');
-		
-		gene.sourcepreview = document.querySelector('#sourcepreview');
-		
-		gene.working = document.querySelector('#working');
-		gene.workingctx = gene.working.getContext('2d');
-		gene.workingctx.imageSmoothingEnabled = false;
-		
-		gene.result = document.querySelector('#resultpreview');
-		gene.resultctx = gene.result.getContext('2d');
-		gene.resultctx.imageSmoothingEnabled = false;
-		
-		gene.autosize = document.querySelector('#autosize');
-		gene.textareas = document.querySelector('#textareas');
-		gene.grayscale = document.querySelector('#grayscale');
-		gene.character = document.querySelector('#character');
-		
-		gene.executebutton = document.querySelector('#execute');
-		gene.executebutton.addEventListener('click', gene.execute);
-		
-		gene.slicecount = document.querySelector('#slices');
-		
+	init: function() {	
 		gene.reader = new FileReader();
 		gene.source = false;
 		gene.reader.addEventListener("load", function () {
 			gene.source = new Image;
 			gene.source.src = gene.reader.result;
-			gene.sourcepreview.src = gene.source.src;
+			inter.els.sourcePreview.src = gene.source.src;
 		}, false);
-		gene.fileselector.addEventListener('change', gene.loadsource);
+		inter.els.fileSelector.addEventListener('change', gene.loadsource);
 		
 		gene.attachPlacementPreview();
 		gene.computePlacement();
+		
+		inter.els.executeButton.addEventListener('click', gene.execute);
 	},
 	
 	attachPlacementPreview: function() {
-		gene.offset.addEventListener('change', gene.computeDeferredPlacement);
-		gene.zoffset.addEventListener('change', gene.computeDeferredPlacement);
-		gene.slicecount.addEventListener('change', gene.computeDeferredPlacement);
-		gene.disposition.addEventListener('change', gene.computeDeferredPlacement);
+		inter.els.offset.addEventListener('change', gene.computeDeferredPlacement);
+		inter.els.zoffset.addEventListener('change', gene.computeDeferredPlacement);
+		inter.els.slices.addEventListener('change', gene.computeDeferredPlacement);
+		inter.els.disposition.addEventListener('change', gene.computeDeferredPlacement);
 	},
 	
 	computeDeferredPlacement: function() {
@@ -67,19 +35,25 @@ var gene = {
 			clearTimeout(gene.placement_timeout);
 		}
 		
-		gene.placement_timeout = setTimeout(gene.computePlacement, 100);
+		gene.placement_timeout = setTimeout(gene.computePlacement, 250);
 	},
 	
 	computePlacement: function() {
-		gene.placement.innerHTML = '';
+		var old = document.querySelector('#greendot');
+		var oldheight = 0;
+		if(old) {
+			oldheight = old.style.height;
+		}
+		inter.els.placement.innerHTML = '';
 		gene.greendot = document.createElement('div');
 		gene.greendot.title = 'Top/extension of the resulting graphic (approx)';
 		gene.greendot.classList.add('greendot');
-		gene.placement.appendChild(gene.greendot);
-		var offset = parseFloat(gene.offset.value);
-		var zoffset = parseFloat(gene.zoffset.value);
-		var slices = parseInt(gene.slicecount.value);
-		var disposition = gene.disposition.value;
+		gene.greendot.setAttribute('id', 'greendot');
+		inter.els.placement.appendChild(gene.greendot);
+		var offset = parseFloat(inter.els.offset.value);
+		var zoffset = parseFloat(inter.els.zoffset.value);
+		var slices = parseInt(inter.els.slices.value);
+		var disposition = inter.els.disposition.value;
 		var side = Math.ceil(Math.sqrt(slices));
 		var row = 0;
 		var currow = 0;
@@ -100,7 +74,7 @@ var gene = {
 				curzoffset += delta;
 			}
 			
-			if(disposition == 'both') {
+			if(disposition == 'grid') {
 				col = delta % side;
 				row = Math.floor(delta / side);
 				curzoffset += col;
@@ -129,43 +103,46 @@ var gene = {
 			}			
 			sign.innerText = delta + 1;
 			if(row > currow) {
-				gene.placement.appendChild(document.createElement('br'));
+				inter.els.placement.appendChild(document.createElement('br'));
 			}
-			gene.placement.appendChild(sign);
+			inter.els.placement.appendChild(sign);
 		}
 		
 		gene.greendot.style.left = '' + ((zoffset - 0.5) * -2) + 'em'
 		gene.greendot.style.top = '' + (offset * -2) + 'em'
+		if(oldheight) {
+			gene.greendot.style.height = oldheight;
+		}
 	},
 	
 	loadsource: function() {
-		var file = gene.fileselector.files[0];
+		var file = inter.els.fileSelector.files[0];
 		if(file) {
 			gene.reader.readAsDataURL(file);
 		}
 	},
 	
 	execute: function() {
-		gene.cover.style.display = 'block';
+		inter.els.cover.style.display = 'block';
 		setTimeout(function() {
 			gene.preparation();
 			gene.processSlices();
 			gene.showErrors();
-			gene.cover.style.display = 'none';
+			inter.els.cover.style.display = 'none';
 		}, 100);
 	},
 	
 	preparation: function() {
 		gene.errors = [];
-		gene.errormessages.innerText = '';
-		gene.textareas.innerText = '';
-		gene.gammacorrection = 1 / parseFloat(document.querySelector("#gamma").value);
-		gene.alphacorrection = 1 / parseFloat(document.querySelector("#alpha").value);
-		gene.useshort = document.querySelector('#shortcolors').checked;
+		inter.els.errorMessages.innerText = '';
+		inter.els.textareas.innerText = '';
+		gene.gammaCorrection = 1 / parseFloat(inter.els.gammaCorrection.value);
+		gene.alphaCorrection = 1 / parseFloat(inter.els.alphaCorrection.value);
+		gene.useshort = inter.els.shortCodes.checked;
 	},
 	
 	processSlices: 	function() {
-		var slices = parseInt(gene.slicecount.value);
+		var slices = parseInt(inter.els.slices.value);
 		if(slices < 1) {
 			gene.errors.push('Invalid amount of slices');
 			return;
@@ -201,7 +178,7 @@ var gene = {
 		var tw;
 		var th;
 		
-		if(!gene.autosize.checked) {
+		if(!inter.els.autoSize.checked) {
 			for(var s = 0; s < slices; ++s) {
 				decide = attemptOutput(w, h);
 				if(decide === true) {
@@ -222,7 +199,6 @@ var gene = {
 			for(tw = 10; /* no limit */ ; tw += 10) {
 				// first pass, increase by 10 until run out of slices
 				th = Math.round(tw * ratio);
-				// console.log(["#1 attempting: ", tw, th, slices].join(', '));
 				delta = 0;
 				start = 0;
 				results = [];
@@ -231,17 +207,14 @@ var gene = {
 					decide = attemptOutput(tw, th);
 					if(decide === true) {
 						// picture completed
-						// console.log('picture completed');
 						break;
 					}
 					if(decide === false) {
-						// console.log('got errors');
 						// got errors
 						return;
 					}
 				}
 				if(result.y < th && s == slices) {
-					// console.log('out of space');
 					// run out of space
 					break;
 				}
@@ -250,7 +223,6 @@ var gene = {
 			for(/* no init */; tw > maxw; --tw) {
 				// second pass, decrease by 1 until NOT run out of slices
 				var th = Math.round(tw * ratio);
-				// console.log(["#2 attempting: ", tw, th, slices].join(', '));
 				delta = 0;
 				start = 0;
 				results = [];
@@ -259,18 +231,15 @@ var gene = {
 				for(s = 0; s < slices; ++s) {
 					decide = attemptOutput(tw, th);
 					if(decide === true) {
-						// console.log('picture completed');
 						completed = true;
 						break;
 					}
 					if(decide === false) {
-						// console.log('got errors');
 						// got errors
 						return;
 					}
 				}
 				if(completed && s >= slices - 1) {
-					// console.log('end of loop 2');
 					// run out of space
 					break;
 				}
@@ -290,14 +259,14 @@ var gene = {
 		var col = result.col;
 		var row = result.row;
 		var container = document.createElement('div');
-		gene.textareas.appendChild(container);
+		inter.els.textareas.appendChild(container);
 		container.innerHTML = '<hr><strong>Arc Sign #' + (delta + 1) + '</strong>, ';
 		container.innerHTML += '' + output.length + ' chars, sizes (' + w + ', ' + h + ')';
 		container.innerHTML += '<br>Place at row #' + row + ' and column #' + col;
 		
 		
 		var textarea = document.createElement('textarea');
-		var limit = parseInt(document.querySelector('#limit').value);
+		var limit = parseInt(inter.els.charLimit.value);
 		var notices = document.createElement('p');
 		
 		var errors = [];
@@ -330,7 +299,7 @@ var gene = {
 	},
 
 	showErrors: function() {
-		gene.errormessages.innerHTML = gene.errors.join('<br>');
+		inter.els.errorMessages.innerHTML = gene.errors.join('<br>');
 	},
 	
 	generateOutput: function(w, h, start, delta, slices) {
@@ -340,13 +309,13 @@ var gene = {
 		var intro = gene.prepareCodeIntro();
 		var output = intro.output;
 		var m = new Array(h);
-		var limit = parseInt(document.querySelector('#limit').value);
+		var limit = parseInt(inter.els.charLimit.value);
 		var y;
 		var offs = {};
 		var side = Math.ceil(Math.sqrt(slices));
 		var curhex = '';
 		var rgba = {};
-		var imagedata = gene.resultctx.createImageData(1, 1);
+		var imagedata = inter.els.resultctx.createImageData(1, 1);
 		for(y = start; y < h; ++y) {
 			m[y] = new Array(w);
 			var line = '';
@@ -357,13 +326,13 @@ var gene = {
 					curhex = m[y][x];
 					line += '<' + curhex + '>';
 				}
-				line += gene.character.value;
+				line += inter.els.characters.value;
 				rgba = color.hexToRgba(curhex);
 				imagedata.data[0] = rgba.r;
 				imagedata.data[1] = rgba.g;
 				imagedata.data[2] = rgba.b;
 				imagedata.data[3] = rgba.a;
-				gene.resultctx.putImageData(imagedata, x, y);
+				inter.els.resultctx.putImageData(imagedata, x, y);
 			}
 			offs = gene.prepareCodeOffsets(delta, side, y, intro);
 			if(output.length + line.length + offs.output.length > limit) {
@@ -390,31 +359,45 @@ var gene = {
 	},
 	
 	prepareCanvas: function (w, h) {
-		gene.working.width = w;
-		gene.working.height = h;
-		gene.workingctx.clearRect(0, 0, w, h);
-		gene.workingctx.drawImage(gene.source, 0, 0, w, h);
+		inter.els.working.width = w;
+		inter.els.working.height = h;
+		inter.els.workingctx.clearRect(0, 0, w, h);
+		inter.els.workingctx.drawImage(gene.source, 0, 0, w, h);
 		
-		gene.result.width = w;
-		gene.result.height = h;
-		gene.resultctx.clearRect(0, 0, w, h);
+		inter.els.result.width = w;
+		inter.els.result.height = h;
+		inter.els.resultctx.clearRect(0, 0, w, h);
 	},
 	
 	prepareCodeIntro: function() {
-		var offset = parseFloat(gene.offset.value);
-		var disposition = gene.disposition.value;
-		var size = parseFloat(gene.pixelsize.value);
-		var width = parseFloat(gene.width.value);
-		var zoffset = parseFloat(gene.zoffset.value);
-		var tweak = parseInt(gene.tweak.value);
-		var vtweak = parseInt(gene.vtweak.value);
-		var decimals = parseInt(gene.decimals.value);
-		var font = gene.font.value;
+		var verror = parseFloat(inter.els.vError.value);
+		var offset = parseFloat(inter.els.offset.value);
+		var disposition = inter.els.disposition.value;
+		var indent = parseFloat(inter.els.indent.value);
+		var size = parseFloat(inter.els.size.value);
+		var width = parseFloat(inter.els.width.value);
+		var zoffset = parseFloat(inter.els.zoffset.value);
+		var tweak = parseInt(inter.els.mainSpacing.value);
+		var vtweak = parseInt(inter.els.verticalSpacing.value);
+		var decimals = parseInt(inter.els.decimals.value);
+		var font = inter.els.fontName.value;
 
 		var spacing = gene.round_number(size / 10000 * (100 + tweak), decimals);
 		var vspacing = gene.round_number(spacing / 100 * vtweak, decimals);
+		verror = 100 / (100 - verror);
 		
 		var output = '';
+		
+		var incipit = inter.els.freeIncipit.value;
+		var align = inter.els.align.value;
+		
+		if(indent != 0) {
+			output += '<indent=' + indent + '>';
+		}
+		
+		if(align) {
+			output += '<align=' + align + '>';
+		}
 		
 		output += '<width=' + gene.round_number(width, decimals) + '>';
 		
@@ -427,11 +410,13 @@ var gene = {
 			zoffset: zoffset,
 			disposition: disposition,
 			decimals: decimals,
+			verror: verror,
+			incipit: incipit,
 		};
 	},
 	
 	prepareCodeOffsets: function(delta, side, lines, intro) {
-		var offset = intro.offset + 0.50 - intro.vspacing * 4.5 - lines * intro.vspacing * 1.01;
+		var offset = intro.offset + 0.50 - intro.vspacing * 4.5 - lines * intro.vspacing * intro.verror;
 		var zoffset = intro.zoffset;
 		var col = 0;
 		var row = 0;
@@ -446,7 +431,7 @@ var gene = {
 			zoffset += delta;
 		}
 		
-		if(intro.disposition == 'both') {
+		if(intro.disposition == 'grid') {
 			col = delta % side;
 			row = Math.floor(delta / side);
 			zoffset += col;
@@ -456,7 +441,7 @@ var gene = {
 		offset = gene.round_number(offset, intro.decimals);
 		
 		return {
-			output: '<offset=' + offset + '><zoffset=' + zoffset + '>',
+			output: intro.incipit + '<offset=' + offset + '><zoffset=' + zoffset + '>',
 			col: col + 1,
 			row: row + 1,
 			offset: offset,
@@ -470,7 +455,7 @@ var gene = {
 
 	readPixel: function (x, y) {
 		var hex = '';
-		var p = gene.workingctx.getImageData(x, y, 1, 1).data;
+		var p = inter.els.workingctx.getImageData(x, y, 1, 1).data;
 		
 		var rgba = {
 			r: p[0],
@@ -478,21 +463,24 @@ var gene = {
 			b: p[2],
 			a: p[3]
 		};
+		//console.log(rgba);
 		
-		if(gene.grayscale.checked) {
+		if(inter.els.grayScale.checked) {
 			rgba.r = rgba.g = rgba.b = 0.2126 * rgba.r + 0.7152 * rgba.g + 0.0722 * rgba.b;
 		}
 
-		if(gene.gammacorrection != 1) {
-			rgba.r = 255 * Math.pow(( rgba.r / 255), gene.gammacorrection);
-			rgba.g = 255 * Math.pow(( rgba.g / 255), gene.gammacorrection);
-			rgba.b = 255 * Math.pow(( rgba.b / 255), gene.gammacorrection);
+		if(gene.gammaCorrection != 1) {
+			rgba.r = 255 * Math.pow(( rgba.r / 255), gene.gammaCorrection);
+			rgba.g = 255 * Math.pow(( rgba.g / 255), gene.gammaCorrection);
+			rgba.b = 255 * Math.pow(( rgba.b / 255), gene.gammaCorrection);
 		}
 		
-		if(gene.alphacorrection != 1) {
-			rgba.a = 255 * Math.pow(( rgba.a / 255), gene.alphacorrection);
+		if(gene.alphaCorrection != 1) {
+			rgba.a = 255 * Math.pow(( rgba.a / 255), gene.alphaCorrection);
 		}
-				
+		
+		//console.log(rgba);
+		
 		var longValue = color.rgbaToHex(rgba);
 		var shortValue = color.rgbaToHexShort(rgba);
 		var expanded = color.expandedHex(shortValue);

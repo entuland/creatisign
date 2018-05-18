@@ -1,216 +1,74 @@
 <!doctype html>
 <html>
 <head>
-	<title>CreatiSign Generator V2.6</title>
+	<title>CreatiSign Generator V3</title>
 	<meta charset="utf-8" />
-	<script src="js/color.js"></script>
-	<script src="js/gene.js"></script>
-	<link href="css/style.css" rel="stylesheet">
+	<link href="css/style.css?2384756823745" rel="stylesheet">
+	<script src="js/settings.js?2384756823745"></script>
+	<script src="js/inter.js?2384756823745"></script>
+	<script src="js/color.js?2384756823745"></script>
+	<script src="js/gene.js?2384756823745"></script>
 </head>
 <body>
-<h1>CreatiSign Generator - V2.6</h1>
-<p><a href="http://entuland.com/creatisign">Latest live version</a> - <a href="https://github.com/entuland/creatisprites" target="_blank">All versions on GitHub</a></p>
-<p>This is a tool that lets you convert images into codes that you can put into Arc Signs in the game <a href="http://store.steampowered.com/app/280790" target="_blank">Creativerse</a>, free to play on Steam</p>
-<p>Select the image you want to convert to CreatiSign code (or drag it onto the file selector), then alter the settings as you please and click the green "Execute" button at the bottom-left corner of this page.</p>
-<p>The image will NOT be sent to any server. You can save this page on your desktop and use it offline too, if you're concerned about that :)</p>
-<p>Only tested in Chrome, may work in other browsers.</p>
-<p><a href="http://steamcommunity.com/app/280790/discussions/3/1479857071263583178/" target="_blank">Creatisign Generator discussion on Steam Community Forums</a></p>
-<table id="settings">
-	<tbody>
-		<tr><th>Input image:</th><td><input type="file" id="fileselector"><br>select or drag the image here above</td></tr>
-				
-		<tr><th>&lt;zoffset&gt; tag:</th><td><input type="number" id="zoffset" step="0.01" value="0" min="-8" max="8"><small class="hint">range -8 ~ 8, measured in blocks, defaults to zero in the game when omitted and results in the graphic placed in the middle of a block space</small></td></tr>
-		
-		<tr><th>&lt;offset&gt; tag:</th><td><input type="number" id="offset" step="0.01" value="2" min="-8" max="8"><small class="hint">range -8 ~ 8, measured in blocks, defaults to about 0.55 in the game when omitted</small></td></tr>
-		
-		<tr><th>&lt;width&gt; tag:</th><td><input type="number" id="width" min="0" step="0.01" value="8" max="8"><small class="hint">range 0 ~ 8, amount of horizontal blocks the sign is allowed to grow before wrapping;</small></td></tr>
-		
-		<tr><th>&lt;size&gt; tag:</th><td><input type="number" id="pixelsize" min="0" step="0.01" value="2"><small class="hint">using the "Arial SDF" font a period of size 1 is about 1/100th of a block</small></td></tr>
-		
-		<tr><th>Main spacing tweak <small>(%)</small>:</th><td><input type="number" id="tweak" step="0.1" value="-10"><small class="hint">values higher than -10 start to show the spacing grid between pixels, the higher the value, the larger the horizontal spacing</small></td></tr>
-		
-		<tr><th>Vertical spacing tweak<br><small>(% of main spacing tweak)</small>:</th><td><input type="number" id="vtweak" min="0" step="0.1" value="100"><small class="hint">100 gives equal spacing in both directions, 200 doubles the vertical spacing, 50 halves it and so forth</small></td></tr>
-		
-		<tr><th>Max decimals after tweaking:</th><td><input type="number" id="decimals" min="0" step="1" value="3"> <small class="hint">rounding for the the various numeric tags</small></td></tr>
-		
-		<tr><th>RGB Gamma correction</th><td><input type="number" id="gamma" min="0.01" step="0.01" value="0.5" max="7.99"> <small class="hint">range 0.01 ~ 7.99, preset to 0.5 to work around the current deviation of RGB shades, set this to 1 to disable gamma correction altogether</small></td></tr>
-		
-		<tr><th>Alpha correction</th><td><input type="number" id="alpha" min="0.01" step="0.01" value="1" max="7.99"><small class="hint">range 0.01 ~ 7.99, preset to 1 (disabled) to let you use it only if necessary</small></td></tr>
-		
-		<tr><th></th><td><label><input type="checkbox" id="shortcolors"> Always use short color codes</label><small class="hint">helps reducing the code size, but can alter the colors of your image; short color codes will be used anyways if they match the long codes</small></td></tr>
-		
-		<tr><th></th><td><label><input type="checkbox" id="autosize" checked> Automatically compute largest possible resolution</label><small class="hint">necessary for large images but may blur pixel art; if you leave this off and try to convert large images your browser will likely hang or crash, you've been warned!</small></td></tr>
-		
-		<tr><th></th><td><label><input type="checkbox" id="grayscale"> Convert to grayscale</label><small class="hint">really need a hint on this?</small></td></tr>
-
-		<tr><th>Character to repeat</th><td><input type="text" id="character" value="."> <small class="hint">character(s) to use to draw pixels, defaults to the period</small></td></tr>
-
-		<tr><th>Font</th><td>
-			<select id="font">
-				<option>Arial SDF</option>
-				<option>default</option>
-				<option>LiberationSans SDF</option>
-				<option>SourceHanSerifSC-Bold SDF</option>
-				<option>SourceHanSerifSC-Regular SDF</option>
-			</select>
-		</td></tr>
-
-		<tr><th>Number of slices</th><td><input type="number" id="slices" step="1" value="1" min="1" max="64"> <small class="hint">range 1 ~ 64; number of horizontal slices / arc signs for splitting the image and get better resolutions;</small></td></tr>
-		
-		<tr><th>Character count limit</th><td><input type="number" id="limit" step="1" value="10000" min="1"> <small class="hint">10K chars is the current Arc Sign textbox limit; the bugs about the character computation have been hopefully all removed so you should not need to alter this number</small></td></tr>
-		
-		<tr><th>Sign disposition</th><td>
-			<select id="disposition">
-				<option value="both">horizontal+vertical</option>
-				<option>horizontal</option>
-				<option>vertical</option>
-			</select><br>
-			The preview is on the right-bottom corner, hover on it to enlarge it.
-		</td></tr>
-		
-	</tbody>
-</table>
-
-<div id="output">
-	<h4>Output</h4>
-	<figure>
-		<figcaption>Source preview</figcaption>
-		<img src="" id="sourcepreview">
-	</figure>
-	<figure style="display: none">
-		<figcaption>Working canvas</figcaption>
-		<canvas id="working"></canvas>
-	</figure>
-	<figure>
-		<figcaption>Results preview</figcaption>
-		<canvas id="resultpreview"></canvas>
-	</figure>
-	<div id="errors" class="notices"></div>
-	<div id="textareas"></div>
-</div>
-<hr>
-<div id="placementcontainer">
-	<div id="grid">
-		<div id="placementpreview"></div>
+	<div id="main">
+		<div id="interface"></div>
+		<div id="output">
+			<h1 id="heading">CreatiSign Generator - V3</h1>
+			<p><a href="http://entuland.com/creatisign">Latest live version</a> - <a href="https://github.com/entuland/creatisprites" target="_blank">All versions on GitHub</a></p>
+			<p><strong>New! Watch my <a href="https://www.twitch.tv/entuland/videos/all" target="_blank">video tutorials on Twitch</a> if you dare!</strong></p>
+			<p><a href="http://entuland.com/creatisprites" target="_blank">Check out the Sprites Picker too!</a></p>
+			<p>This tool lets you convert images into codes that you can put into Arc Signs in the game <a href="http://store.steampowered.com/app/280790" target="_blank">Creativerse</a>, free to play on Steam</p>
+			<p>Select the image you want to convert to CreatiSign code (or drag it onto the file selector at the bottom of this page), then alter the settings as you please and click the "Execute" button.</p>
+			<p>The image will NOT be sent to any server. You can save this page on your desktop and use it offline too, if you're concerned about that :)</p>
+			<p>Only tested in Chrome, may work in other browsers. Some settings have additional info in their tooltips (hover on them and wait a little).</p>
+			<p><a href="http://steamcommunity.com/app/280790/discussions/3/1479857071263583178/" target="_blank">CreatiSign Generator discussion</a> (on Steam forum), <a href="http://entuland.com/creatisign/changelog.txt" target="_blank">Changelog</a> (txt file)</p>
+			
+			<p>Previous versions:
+				<a href="http://entuland.com/creatisign/v2.6" target="_blank">V2.6 </a>,
+				<a href="http://entuland.com/creatisign/v2.5" target="_blank">V2.5 </a>,
+				<a href="http://entuland.com/creatisign/v2.4" target="_blank">V2.4 </a>,
+				<a href="http://entuland.com/creatisign/v2.3" target="_blank">V2.3 </a>,
+				<a href="http://entuland.com/creatisign/v2.2" target="_blank">V2.2 </a>,
+				<a href="http://entuland.com/creatisign/v2.1" target="_blank">V2.1 </a>,
+				<a href="http://entuland.com/creatisign/v1" target="_blank">V1 </a>
+			</p>
+			
+			<figure class="sourcePreview">
+				<figcaption>Source preview</figcaption>
+				<img id="sourcePreview">
+			</figure>
+			<div id="errors" class="notices"></div>
+			<figure style="display: none">
+				<figcaption>Working canvas</figcaption>
+				<canvas id="workingCanvas"></canvas>
+			</figure>
+			<figure class="resultsPreview">
+				<figcaption>Results preview</figcaption>
+				<canvas id="resultsPreview"></canvas>
+			</figure>
+			<div id="textareas"></div>
+		</div>
+		<div id="placementcontainer">
+			<div id="grid">
+				<div id="placementPreview"></div>
+			</div>
+			<h2 style="text-align: center">Placement preview (approx)</h2>
+			<ul class="showhover">
+				<li>Signs (boxes with the number inside) are depicted seen from their <em>left</em> side
+				<li>(when an arc sign faces at you its <em>left</em> side is your <em>right</em> side)
+				<li>Offset goes from top (higher) to bottom (lower)
+				<li>Zoffset goes from left (higher) to right (lower)
+				<li>The green rectangle indicates the top of the resulting graphic and will extend vertically after executing to preview the graphics' height (approx)
+				<li>A red sign indicates a sign that will very likely exceed the offset or zoffset limits
+				<li>In any case, the textareas will be clearly marked if they exceed any limit
+			</ul>
+		</div>
+		<div id="commands">
+			Select or drag image here: <input type="file" id="fileSelector">
+			<button id="execute">Execute</button>
+			<button id="reset">Reset settings?</button>
+		</div>
 	</div>
-	<h2 style="text-align: center">Placement preview (approx)</h2>
-	<ul class="showhover">
-		<li>Signs (boxes with the number inside) are depicted seen from their <em>left</em> side
-		<li>(when an arc sign faces at you its <em>left</em> side is your <em>right</em> side)
-		<li>Offset goes from top (higher) to bottom (lower)
-		<li>Zoffset goes from left (higher) to right (lower)
-		<li>The green rectangle indicates the top of the resulting graphic and will extend vertically after executing to preview the graphics' height (approx)
-		<li>A red sign indicates a sign that will very likely exceed the offset or zoffset limits
-		<li>In any case, the textareas will be clearly marked if they exceed any limit
-	</ul>
-</div>
-
-<button id="execute">Execute</button>
-
-<h2>Useful patterns</h2>
-<p>The results will vary in color and sizes / ratio depending on the image you feed to the generator, the following numbers have been found by trial and error using the "Arial SDF" font; since you can use more than one character to be repeated, in certain patterns you can simply add spaces to increase the horizontal spacing.</p>
-
-<div class="recipe">
-	<h3>Simple grid</h3>
-	<img src="img/simplegrid.jpg">
-	<ul>
-		<li>Set the character to repeat to "+" (plus sign)
-		<li>Set the main spacing tweak around 360
-		<li>Set the vertical spacing tweak to 100
-	</ul>
-</div>
-
-<div class="recipe">
-	<h3>Vertical bars</h3>
-	<img src="img/verticalbars.jpg">
-	<ul>
-		<li>Set the character to repeat to "|" (pipe sign)
-		<li>Set the main spacing tweak in the range from 900 (farther bars) down to zero (closer bars)
-		<li>Tweak the vertical spacing as you please from 10 (shorter) to 100 (taller) to change the overall height of the pattern
-	</ul>
-</div>
-
-<div class="recipe">
-	<h3>Horizontal bars</h3>
-	<img src="img/horizontalbars.jpg">
-	<ul>
-		<li>Set the character to repeat to "-" (minus sign) or "=" (equal sign, for paired bars)
-		<li>Set the main spacing tweak in the range from 160 (larger pattern) down to zero (narrower pattern)
-		<li>Tweak the vertical spacing as you please from around 50 (closer bars) to 100 and over (farther and farther bars)
-	</ul>
-</div>
-
-<div class="recipe">
-	<h3>Interlocked grid</h3>
-	<img src="img/interlockedgrid.jpg">
-	<ul>
-		<li>Set the character to repeat to "#" (hash sign)
-		<li>Set the main spacing tweak to 430
-		<li>Set the vertical spacing tweak to 100
-	</ul>
-</div>
-
-<div class="recipe">
-	<h3>Chains / door curtain</h3>
-	<img src="img/doorcurtain.jpg">
-	<ul>
-		<li>Set the character to repeat to "§" (section mark)
-		<li>Set the main spacing tweak to 480
-		<li>Set the vertical spacing tweak to 110
-</ul>
-</div>
-
-<div class="recipe">
-	<h3>Industrial grid / fencing net</h3>
-	<img src="img/fencingnet.jpg">
-	<ul>
-		<li>Set the characters to repeat to "&lt;&gt;" (less than mark &amp; greater than mark)
-		<li>Set the main spacing tweak to 350
-		<li>Set the vertical spacing tweak to 100
-	</ul>
-</div>
-
-<div class="recipe">
-	<p><small>Changelog
-	<ul>
-		<li>V2.6:<ul>
-			<li>fixed overlapping, duplicated row across slides
-			<li>improved slide placement (they were slightly off even before the duplicated row)
-			<li>fixed line count in each textarea
-			<li>improved preview of sign placement
-			<li>added preview of graphic extension
-		</ul>
-		<li>V2.5:<ul>
-			<li>selecting / dragging an image shows its preview immediately
-			<li>added ability to arrange arc signs in different ways
-			<li>added the preview of both the signs arrangement and the graphics placement related to the arc signs (hover it to enlarge it)
-			<li>the graphic now starts exactly at the chosen offset and grows towards the bottom, not somewhat higher than the chosen offset as it happened in previous versions
-			<li>removed the ability to omit offset and zoffset tags by setting them to zero (the offset defaulting to about 0.55 when omitted is misleading in first place, and keeping them always in the code makes it easier to tweak them in the game)
-			<li>added checkered background to the source and result previews to highlight transparent areas
-			<li>the result preview now shows the gamma correction and grayscale effects
-			<li>the textareas get clearly marked in red if any limit gets exceeded
-			<li>added a "Working..." cover to show when the script is running
-			<li>changed the default value of offset from 0 to 2, to make it stand a bit higher than the first arc sign
-			<li>changed the default value of zoffset from 0.51 to 0 to have it stand exactly in the middle of the column
-			<li>refactored the generation algorithm to optimize the slices usage (there won't be any wasted signs using just 2 or 3 K chars, perhaps just the last one depending on the settings); this got also rid of the bug that trimmed some lines at the end of the source image
-			<li>refactored the whole script into separate files to ease the development
-		</ul>
-		<li>V2.4:<ul>
-			<li>added slicing feature
-			<li>added grayscale convertion option
-			<li>added offset and zoffset controls
-			<li>added font &amp; character controls
-			<li>added some recipes to create simple patterns
-			<li>major change in spacing tweak: its sign has been reversed and now the &lt;size&gt; value remains untouched, it's the &lt;mspace&gt; and &lt;line-height&gt values that change depending on the tweak
-			<li>restyled the page a bit and tidied up code a little
-		</ul>
-		<li>V2.3: fixed extremely silly bug in alpha handling
-		<li>V2.2: added gamma correction, fixed a bug that created artifacts at the border of the image in some cases
-		<li>V2.1: converted line endings from "\n" to "\r\n"
-		<li>V2: uses alternate font and periods to draw fully opaque pixels, added options to tweak the tag values, added autosize feature, added short hex values feature
-		<li>V1: first version using &lt;mark&gt; technique
-	</ul></small></p>
-</div>
-<div id="cover"><div>Working...</div></div>
+	<div id="cover"><div>Working...</div></div>
 </body>
 </html>

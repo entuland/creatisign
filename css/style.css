@@ -4,147 +4,21 @@ body {
 	padding-bottom: 50px;
 }
 
-canvas {
-  image-rendering: optimizeSpeed; 
-  image-rendering: -moz-crisp-edges; 
-  image-rendering: -webkit-optimize-contrast;
-  image-rendering: -o-crisp-edges; 
-  image-rendering: pixelated;    
-  -ms-interpolation-mode: nearest-neighbor;
+textarea {
+	background: yellow;
+	width: 100%;
+	height: 5em;
 }
 
-textarea {
-	width: 100%;
-	height: 20em;
-	background: yellow;
+#textareas {
+	margin-left: 20%;
+	margin-right: 20%;
 }
 
 .error {
 	background: red !important;
-	color: white;
 }
-
-th {
-	text-align: right;
-	padding-right: 1em;
-	position: relative;
-	max-width: 300px;
-}
-
-input[type=file] {
-	background-color: yellow;
-	height: 50px;
-}
-
-#sourcepreview {
-	max-width: 400px;
-	max-height: 400px;
-}
-
-#fileselector {
-	width: 100%;
-}
-
-input, select {
-	font-size: 120%;
-	font-weight: bolder;
-	text-align: center;
-	width: 200px;
-}
-
-input[type=checkbox] {
-	width: auto;
-}
-
-td, th {
-	padding: 5px;
-}
-
-#char {
-	font-size: 300%;
-}
-
-h3 {
-	border-top: 1px solid #666;
-	margin-top: 20px;
-	padding-top: 10px;
-}
-
-h4 {
-	text-align: center;
-}
-
-#execute {
-	padding: 10px;
-	position: fixed;
-	left: 0;
-	bottom: 0;
-	background: #0E0;
-	border: 2px solid #050;
-}
-
-small.hint {
-	display: inline-block;
-	width: 1.5em;
-	height: 1.5em;
-	margin: 3px;
-	margin-left: 10px;
-	padding: 0;
-	overflow: hidden;
-	background: blue;
-	color: white;
-	position: absolute;
-	border-radius: 1em;
-	box-shadow: 2px 2px 2px #666;
-}
-
-small.hint:hover {
-	overflow: auto;
-	position: absolute;
-	width: auto;
-	height: auto;
-	padding: 1em;
-	max-width: 300px;
-	z-index: 2;
-}
-
-small.hint:before {
-	display: inline-block;
-	text-align: center;
-	width: 1.5em;
-	height: 1.5em;
-	content: "i";
-	font-size: 200%;
-	padding: 3px;
-}
-
-small.hint:hover:before {
-	display: none;
-}
-
-label {
-	cursor: pointer;
-}
-
-#settings, #output {
-	width: 49%;
-	display: inline-block;
-	vertical-align: top;
-	padding: 0;
-	margin: 0;
-}
-
-#output {
-	background: #AFA;
-}
-
-.recipe {
-	width: 30%;
-	float: left;
-	margin: 10px;
-	padding: 10px;
-}
-
+ 
 #cover {
 	background: rgba(0, 0, 0, 0.8);
 	left: 0;
@@ -165,8 +39,128 @@ label {
 	transform: translate(-50%, -50%);
 }
 
-img, canvas {
+#sourcePreview {
+	max-width: 100%;
+	max-height: 300px;
+}
+
+#output img, canvas {
 	background: url(../img/alphagrid.png) top left repeat;
+}
+
+img.icon {
+	width: 20%;
+	margin: 5% 2% 2% -2%;
+}
+
+.settingsContainer > small {
+	text-align: center;
+	display: block;
+	font-variant: small-caps;
+}
+
+label {
+	font-variant: small-caps;
+	cursor: pointer;
+	display: block;
+}
+
+label [type=checkbox] {
+	cursor: pointer;
+	transform: scale(2);
+}
+
+label input, label select {
+	margin-top: 10px;
+}
+
+.settingsContainer {
+	margin: 5px;
+	padding: 5px;
+	padding-top: 20px;
+	display: none;
+}
+
+#interface {
+	position: absolute;
+	left: 0;
+	top: 0;
+	width: 33%;
+	overflow-x: hidden;
+}
+
+#output {
+	position: absolute;
+	right: 0;
+	top: 0;
+	width: 66%;
+	padding: 1em;
+	box-sizing: border-box;
+}
+
+#interface, #output {
+	bottom: 50px;
+	padding-bottom: 10em;
+	overflow-y: scroll;
+}
+
+#basicSettings {
+	display: block;
+}
+
+#commands {
+	position: fixed;
+	bottom: 0;
+	left: 0;
+	right: 0;
+	height: 50px;
+	z-index: 10;
+	text-align: center;
+	border-top: 1px solid black;
+	box-shadow: 0 -2px 2px #999;
+	padding-top: 5px;
+	background: #DDD;
+	box-sizing: border-box;
+}
+
+#commands button {
+	font-variant: capitalize;
+	background-color: #AFA;
+	padding: 5px;
+	border-radius: 3px;
+	font-size: 130%;
+	border: 1px solid black;
+	box-shadow: 2px 2px 2px #999;
+	cursor: pointer;
+	vertical-align: top;
+}
+
+#fileSelector {
+	height: 80%;
+	width: 50%;
+	background: #FF0;
+	border: 1px solid black;
+	vertical-align: top;
+}
+
+.wrapper {
+	padding: 10px;
+	border: 1px solid black;
+	vertical-align: top;
+	margin: 3px;
+	border-radius: 10px;
+	box-sizing: border-box;
+	background: #AFA;
+	box-shadow: 2px 2px 2px #999;
+}
+
+.wrapper > *,
+label input,
+label select {
+	display: block;
+	width: 100%;
+	text-align: center;
+	font-size: 120%;
 }
 
 .notices {
@@ -208,7 +202,7 @@ img, canvas {
 	padding-top: 16em;
 }
 
-#placementpreview {
+#placementPreview {
 	min-width: 40em;
 	position: relative;
 }
@@ -216,7 +210,7 @@ img, canvas {
 #placementcontainer {
 	position: fixed;
 	right: 0;
-	bottom: 0;
+	bottom: 50px;
 	padding-bottom: 2em;
 	padding-right: 2em;
 	box-sizing: border-box;
@@ -224,7 +218,8 @@ img, canvas {
 	border: 1px solid #060;
 	opacity: 0.5;
 	transform-origin: bottom right;
-	transform: scale(0.5, 0.5);
+	transform: scale(0.33, 0.33);
+	box-shadow: 0 0 5px 5px #999;
 }
 
 #placementcontainer:hover {
@@ -234,4 +229,8 @@ img, canvas {
 
 #placementcontainer:hover .showhover {
 	display: block;
+}
+
+#characters {
+	font-size: 300%;
 }

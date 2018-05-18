@@ -1,0 +1,56 @@
+CreatiSign Generator
+Proudly made in Sardinia (Italy) by Entuland (entuland@gmail.com)
+
+Changelog:
+
+V3:
+	- reorganized interface grouping settings in different modes (basic, medium, advanced, insane)
+	- added settings memory (survives page refreshes) and a settings reset button
+	- added vertical error correction (to account for slight overlaps from slice to slice)
+	- added free-text incipit for each code
+	- added <indent> tag
+	- added <align> tag
+	- added icons to most settings
+	- after execution, the height of the image in the placement preview area survives the change of settings to let you tweak the <offset> value
+	- removed pattern recipes (creating patterns is still possible just like in previous version, I've only removed the recipes: if you were smart enough to understand them you're smart enough to create them fiddling with the settings on your own, besides no one seems to have used them at all so far)
+
+V2.6:
+	- fixed overlapping, duplicated row across slides
+	- improved slide placement (they were slightly off even before the duplicated row)
+	- fixed line count in each textarea
+	- improved preview of sign placement
+	- added preview of graphic extension
+
+V2.5:
+	- selecting / dragging an image shows its preview immediately
+	- added ability to arrange arc signs in different ways
+	- added the preview of both the signs arrangement and the graphics placement related to the arc signs (hover it to enlarge it)
+	- the graphic now starts exactly at the chosen offset and grows towards the bottom, not somewhat higher than the chosen offset as it happened in previous versions
+	- removed the ability to omit offset and zoffset tags by setting them to zero (the offset defaulting to about 0.55 when omitted is misleading in first place, and keeping them always in the code makes it easier to tweak them in the game)
+	- added checkered background to the source and result previews to highlight transparent areas
+	- the result preview now shows the gamma correction and grayscale effects
+	- the textareas get clearly marked in red if any limit gets exceeded
+	- added a "Working..." cover to show when the script is running
+	- changed the default value of offset from 0 to 2, to make it stand a bit higher than the first arc sign
+	- changed the default value of zoffset from 0.51 to 0 to have it stand exactly in the middle of the column
+	- refactored the generation algorithm to optimize the slices usage (there won't be any wasted signs using just 2 or 3 K chars, perhaps just the last one depending on the settings); this got also rid of the bug that trimmed some lines at the end of the source image
+	- refactored the whole script into separate files to ease the development
+
+V2.4:
+	- added slicing feature
+	- added grayscale convertion option
+	- added offset and zoffset controls
+	- added font & character controls
+	- added some recipes to create simple patterns
+	- major change in spacing tweak: its sign has been reversed and now the <size> value remains untouched, it's the <mspace> and <line-height> values that change depending on the tweak
+	- restyled the page a bit and tidied up code a little
+
+V2.3: fixed extremely silly bug in alpha handling
+
+V2.2: added gamma correction, fixed a bug that created artifacts at the border of the image in some cases
+
+V2.1: converted line endings from "\n" to "\r\n"
+
+V2: uses alternate font and periods to draw fully opaque pixels, added options to tweak the tag values, added autosize feature, added short hex values feature
+
+V1: first version using <mark> technique
