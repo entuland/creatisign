@@ -28,15 +28,21 @@ textarea {
 	position: fixed;
 	display: none;
 	z-index: 100;
+	text-align: center;
 }
 
-#cover div {
+#progress {
 	position: fixed;
 	left: 50%;
 	top: 50%;
 	color: white;
 	font-size: 300%;
 	transform: translate(-50%, -50%);
+}
+
+#progress::before {
+	content: "Working...";
+	display: block;
 }
 
 #sourcePreview {
@@ -48,30 +54,10 @@ textarea {
 	background: url(../img/alphagrid.png) top left repeat;
 }
 
-img.icon {
-	width: 20%;
-	margin: 5% 2% 2% -2%;
-}
-
 .settingsContainer > small {
 	text-align: center;
 	display: block;
 	font-variant: small-caps;
-}
-
-label {
-	font-variant: small-caps;
-	cursor: pointer;
-	display: block;
-}
-
-label [type=checkbox] {
-	cursor: pointer;
-	transform: scale(2);
-}
-
-label input, label select {
-	margin-top: 10px;
 }
 
 .settingsContainer {
@@ -152,6 +138,11 @@ label input, label select {
 	box-sizing: border-box;
 	background: #AFA;
 	box-shadow: 2px 2px 2px #999;
+	display: flex;
+}
+
+.wrapper > * {
+	flex: 1;
 }
 
 .wrapper > *,
@@ -162,6 +153,31 @@ label select {
 	text-align: center;
 	font-size: 120%;
 }
+
+.icon {
+	max-width: 20%;
+	padding-right: 10px;
+}
+
+.icon img {
+	width: 100%;
+}
+
+label {
+	font-variant: small-caps;
+	cursor: pointer;
+	display: block;
+}
+
+label [type=checkbox] {
+	cursor: pointer;
+	transform: scale(2);
+}
+
+label input, label select {
+	margin-top: 10px;
+}
+
 
 .notices {
 	color: #600;

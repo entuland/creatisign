@@ -8,8 +8,12 @@ var inter = {
 	
 	init: function() {
 		inter.initializeElements();
+		placer.init(document.querySelector('#placer-container'));
 		inter.loadSettings();
 		inter.updateSettingsMode();
+		inter.updateShift();
+		inter.updateDisposition();
+		inter.progress = document.querySelector('#progress');
 		inter.reset = document.querySelector('#reset');
 		inter.reset.addEventListener('click', inter.checkReset);
 		inter.assignFurtherControls();
@@ -34,12 +38,12 @@ var inter = {
 			inter.els.settingsMode.value = mode;
 			inter.storeSettings();
 			inter.updateSettingsMode();
-			gene.computeDeferredPlacement();
-			gene.attachPlacementPreview();
 			inter.firstReset = false;
 			inter.reset.innerText = 'Reset done!';
 			inter.reset.style.background = '#0F0';
 			inter.reset.style.color = '#000';
+			inter.updateShift();
+			inter.updateDisposition();
 			inter.checkReset.timeout = setTimeout(internalReset, 2000);
 		} else {
 			clearTimeout(inter.checkReset.timeout);
@@ -62,11 +66,9 @@ var inter = {
 		
 		inter.els.working = document.querySelector('#workingCanvas');
 		inter.els.workingctx = inter.els.working.getContext('2d');
-		// inter.els.workingctx.imageSmoothingEnabled = false;
 		
 		inter.els.result = document.querySelector('#resultsPreview');
 		inter.els.resultctx = inter.els.result.getContext('2d');
-		// inter.els.resultctx.imageSmoothingEnabled = false;
 		
 		inter.els.textareas = document.querySelector('#textareas');
 		
@@ -121,6 +123,7 @@ var inter = {
 				}
 			}
 		}
+		inter.updateDisposition();
 	},
 	
 	initializeElements: function() {
@@ -182,21 +185,24 @@ var inter = {
 				}
 			}
 			
-			var img = null;
+			var imgCont = null;
 			if(setting.icon) {
+				var img = null;
+				var imgCont = document.createElement('label');
+				imgCont.classList.add('icon');
+				imgCont.setAttribute('for', id);
 				img = document.createElement('img');
 				img.src = './' + setting.icon;
-				img.classList.add('icon');
+				imgCont.appendChild(img);
 			}
 			
 			// append
+			if(imgCont) { parent.appendChild(imgCont); }
 			if(label) {
 				label.appendChild(el);
 				parent.appendChild(label);
-				if(img) { label.appendChild(img); }
 			} else {
 				parent.appendChild(el);				
-				if(img) { parent.appendChild(img); }
 			}
 
 			if(setting.tagname === 'select') {
@@ -219,6 +225,22 @@ var inter = {
 				} catch(e) { /* no-op */ }
 			});
 		}
+		inter.els.disposition.addEventListener('change', inter.updateDisposition);
+		inter.els.offset.addEventListener('change', inter.updateShift);
+		inter.els.zoffset.addEventListener('change', inter.updateShift);
+		inter.els.slices.addEventListener('change', inter.updateDisposition);
+	},
+
+	updateShift: function() {
+		clearTimeout(inter.updateShift.timeout);
+		inter.updateShift.timeout = setTimeout(placer.shift, 100);
+	},
+
+	updateDisposition: function() {
+		clearTimeout(inter.updateDisposition.timeout);
+		inter.updateDisposition.timeout = setTimeout(function() {
+			placer.arrange(inter.els.disposition.value);
+		}, 100);
 	},
 
 	updateSettingsMode: function() {

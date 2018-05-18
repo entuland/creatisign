@@ -15,11 +15,9 @@ var gene = {
 			inter.els.sourcePreview.src = gene.source.src;
 		}, false);
 		inter.els.fileSelector.addEventListener('change', gene.loadsource);
-		
-		gene.attachPlacementPreview();
-		gene.computePlacement();
-		
+				
 		inter.els.executeButton.addEventListener('click', gene.execute);
+		
 	},
 	
 	attachPlacementPreview: function() {
@@ -30,89 +28,11 @@ var gene = {
 	},
 	
 	computeDeferredPlacement: function() {
-		gene.placement_timeout = false;
-		if(gene.placement_timeout) {
-			clearTimeout(gene.placement_timeout);
-		}
-		
+		clearTimeout(gene.placement_timeout);		
 		gene.placement_timeout = setTimeout(gene.computePlacement, 250);
 	},
 	
 	computePlacement: function() {
-		var old = document.querySelector('#greendot');
-		var oldheight = 0;
-		if(old) {
-			oldheight = old.style.height;
-		}
-		inter.els.placement.innerHTML = '';
-		gene.greendot = document.createElement('div');
-		gene.greendot.title = 'Top/extension of the resulting graphic (approx)';
-		gene.greendot.classList.add('greendot');
-		gene.greendot.setAttribute('id', 'greendot');
-		inter.els.placement.appendChild(gene.greendot);
-		var offset = parseFloat(inter.els.offset.value);
-		var zoffset = parseFloat(inter.els.zoffset.value);
-		var slices = parseInt(inter.els.slices.value);
-		var disposition = inter.els.disposition.value;
-		var side = Math.ceil(Math.sqrt(slices));
-		var row = 0;
-		var currow = 0;
-		var col = 0;
-		var curoffset = 0;
-		var curzoffset = 0;
-
-		function computeLimits(delta) {
-			curoffset = offset;
-			curzoffset = zoffset;
-			if(disposition == 'vertical') {
-				row = delta;
-				curoffset += delta;
-			}
-			
-			if(disposition == 'horizontal') {
-				col = delta;
-				curzoffset += delta;
-			}
-			
-			if(disposition == 'grid') {
-				col = delta % side;
-				row = Math.floor(delta / side);
-				curzoffset += col;
-				curoffset += row;
-			}
-		}
-		
-		for(var delta = 0; delta < slices; ++delta) {
-			var sign = document.createElement('div');
-			sign.classList.add('sign');
-			currow = row
-			computeLimits(delta);
-			if(
-				curoffset < gene.offset_min 
-				|| curoffset > gene.offset_max
-			) {
-				sign.classList.add('error');
-				sign.title += 'offset out of range; ';
-			}			
-			if(
-				curzoffset < gene.zoffset_min 
-				|| curzoffset > gene.zoffset_max
-			) {
-				sign.classList.add('error');
-				sign.title += 'zoffset out of range; ';
-			}			
-			sign.innerText = delta + 1;
-			if(row > currow) {
-				inter.els.placement.appendChild(document.createElement('br'));
-			}
-			inter.els.placement.appendChild(sign);
-		}
-		
-		gene.greendot.style.left = '' + ((zoffset - 0.5) * -2) + 'em'
-		gene.greendot.style.top = '' + (offset * -2) + 'em'
-		if(oldheight) {
-			gene.greendot.style.height = oldheight;
-		}
 	},
 	
 	loadsource: function() {
@@ -122,35 +42,36 @@ var gene = {
 		}
 	},
 	
-	execute: function() {
-		inter.els.cover.style.display = 'block';
-		setTimeout(function() {
-			gene.preparation();
-			gene.processSlices();
-			gene.showErrors();
-			inter.els.cover.style.display = 'none';
-		}, 100);
-	},
-	
 	preparation: function() {
 		gene.errors = [];
 		inter.els.errorMessages.innerText = '';
 		inter.els.textareas.innerText = '';
+		inter.els.cover.style.display = 'block';
+		inter.progress.innerText = '';
 		gene.gammaCorrection = 1 / parseFloat(inter.els.gammaCorrection.value);
 		gene.alphaCorrection = 1 / parseFloat(inter.els.alphaCorrection.value);
 		gene.useshort = inter.els.shortCodes.checked;
 	},
 	
-	processSlices: 	function() {
+	execute: function() {
+		gene.preparation();
+		setTimeout(gene.processSlices, 10);
+	},
+	
+	processSlices: function() {
 		var slices = parseInt(inter.els.slices.value);
 		if(slices < 1) {
 			gene.errors.push('Invalid amount of slices');
+			gene.showErrors();
+			gene.conclusion();
 			return;
 		}
 		var w = gene.source.width;
 		var h = gene.source.height;
 		if(!w || !h) {
 			gene.errors.push('Invalid input image');
+			gene.showErrors();
+			gene.conclusion();
 			return;
 		}
 		var result = false;
@@ -161,91 +82,161 @@ var gene = {
 		function attemptOutput(w, h) {
 			gene.errors = [];
 			result = gene.generateOutput(w, h, start, delta, slices);
-			if(gene.errors.length) {
-				// got errors
-				return false; // trigger exit from processSlices();
-			}
 			results.push(result);
 			if(result.y == h) {
-				// completed the picture
-				return true; // trigger break from loop;
+				return true;
 			}
 			++delta;
 			start = result.y;
 		}
 		
-		var decide;
+		var complete;
 		var tw;
 		var th;
+		var ratio = h / w;
+		var s;
+		var completion;
+		var remain;
 		
-		if(!inter.els.autoSize.checked) {
-			for(var s = 0; s < slices; ++s) {
-				decide = attemptOutput(w, h);
-				if(decide === true) {
-					// picture completed
-					break;
-				}
-				if(decide === false) {
-					// got errors
-					return;
-				}
-			}
-			if(result.y < h) {
-				gene.errors.push('Image too large for this amount of slices');
-				return;
-			}
-		} else {
-			var ratio = h / w;
-			for(tw = 10; /* no limit */ ; tw += 10) {
-				// first pass, increase by 10 until run out of slices
-				th = Math.round(tw * ratio);
-				delta = 0;
-				start = 0;
-				results = [];
-				var s;
-				for(s = 0; s < slices; ++s) {
-					decide = attemptOutput(tw, th);
-					if(decide === true) {
-						// picture completed
-						break;
+		function noAutoSize() {
+			var loop = new TimeoutLooper(
+				// start
+				function() {
+					s = 0;
+					complete = false;
+				},
+				// continue
+				function() {
+					if(gene.errors.length) {
+						return false;
 					}
-					if(decide === false) {
-						// got errors
+					if(s >= slices || complete) {
+						return false;
+					}
+					return true;
+				},
+				// step
+				function() {
+					completion = Math.round(100.0 / slices * s);
+					gene.progress('Processed slice ' + (s + 1) + ' of ' + slices + '<br>Progress: ' + completion + '%');
+					complete = attemptOutput(w, h);
+					++s;
+				},
+				// done
+				function() {
+					gene.conclusion();
+					if(result.y < h) {
+						gene.errors.push('Image too large for this amount of slices');
+					}
+					if(gene.errors.length) {
+						gene.showErrors();
 						return;
 					}
-				}
-				if(result.y < th && s == slices) {
-					// run out of space
-					break;
-				}
-			}
-			var maxw = tw - 10;
-			for(/* no init */; tw > maxw; --tw) {
-				// second pass, decrease by 1 until NOT run out of slices
-				var th = Math.round(tw * ratio);
-				delta = 0;
-				start = 0;
-				results = [];
-				var s;
-				var completed = false;
-				for(s = 0; s < slices; ++s) {
-					decide = attemptOutput(tw, th);
-					if(decide === true) {
-						completed = true;
-						break;
-					}
-					if(decide === false) {
-						// got errors
-						return;
-					}
-				}
-				if(completed && s >= slices - 1) {
-					// run out of space
-					break;
-				}
-			}
+					gene.displayResults(results);
+				},
+				// delay
+				1
+			);
+			loop.run();
 		}
-		gene.greendot.style.height = '' + (2 * result.h * result.intro.vspacing * 1.03) + 'em'; 
+		
+		function autoSize() {
+			var increase;
+			var found;
+			var increases = [100, 49, 23, 11, 5, 1];
+			var total_increases = increases.length;
+			var portion = 100.0 / total_increases;
+			var loop = new TimeoutLooper(
+				// start
+				function() {
+					increase = increases.shift();
+					tw = increase;
+					s = 0;
+					start = 0;
+					delta = 0;
+					results = [];			
+					found = false;
+					complete = false;
+					th = Math.round(tw * ratio);
+				},
+				// continue
+				function() {
+					return !found;
+				},
+				// step
+				function() {
+					remain = (total_increases - increases.length - 1) * portion;
+					completion = Math.round(remain + portion / slices * s);
+					gene.progress('Processed slice ' + (s + 1) + ' of ' + slices + ' <br>Size (' + tw + ', ' + th + ')<br>Increase: ' + increase + '<br>Progress: ' + completion + '%');
+					
+					if(!complete) {
+						complete = attemptOutput(tw, th);
+					}
+					++s;
+					
+					if(increase == 1 && s == slices && complete) {
+						found = true;
+						return;
+					}
+					
+					if(complete) {
+						s = slices;
+					}
+					
+					if(increase == 1 && s == slices && !complete) {
+						--tw;
+						th = Math.round(tw * ratio);
+						s = 0;
+						start = 0;
+						delta = 0;
+						results = [];
+						complete = false;
+						th = Math.round(tw * ratio);
+					} else if(s == slices) {
+						if(!complete) {
+							tw -= increase;
+							increase = increases.shift();							
+						}
+						if(!tw) {
+							tw = increase;
+						} else {
+							tw += increase;							
+						}
+						s = 0;
+						start = 0;
+						delta = 0;
+						results = [];
+						complete = false;
+						th = Math.round(tw * ratio);
+					}
+				},
+				// done
+				function() {
+					gene.conclusion();
+					gene.displayResults(results);
+				},
+				// delay
+				1
+			);
+			loop.run();			
+		}
+				
+		if(!inter.els.autoSize.checked) {
+			noAutoSize();
+		} else {
+			autoSize();
+		}
+	},
+	
+	progress: function(message) {
+		inter.progress.innerHTML = message;
+	},
+	
+	conclusion: function() {
+		inter.els.cover.style.display = 'none';
+	},
+	
+	displayResults: function(results) {
 		for(var i in results) {
 			gene.displayResult(results[i]);
 		}			
@@ -262,7 +253,28 @@ var gene = {
 		inter.els.textareas.appendChild(container);
 		container.innerHTML = '<hr><strong>Arc Sign #' + (delta + 1) + '</strong>, ';
 		container.innerHTML += '' + output.length + ' chars, sizes (' + w + ', ' + h + ')';
-		container.innerHTML += '<br>Place at row #' + row + ' and column #' + col;
+		var placeat = 'Placement: ';
+		switch(true) {
+			case col > 0:
+				placeat += '' + col + ' block(s) behind, ';
+				break;
+			case col < 0:
+				placeat += '' + (-col) + ' block(s) forward, ';
+				break;
+			default:
+				placeat += 'same column, ';
+		}
+		switch(true) {
+			case row < 0:
+				placeat += '' + (-row) + ' block(s) above ';
+				break;
+			case row > 0:
+				placeat += '' + row + ' block(s) beneath ';
+				break;
+			default:
+				placeat += 'same altitude ';
+		}
+		container.innerHTML += '<br>' + placeat + ' (relative to image top)';
 		
 		
 		var textarea = document.createElement('textarea');
@@ -416,34 +428,32 @@ var gene = {
 	},
 	
 	prepareCodeOffsets: function(delta, side, lines, intro) {
-		var offset = intro.offset + 0.50 - intro.vspacing * 4.5 - lines * intro.vspacing * intro.verror;
-		var zoffset = intro.zoffset;
+		var offset = -placer.finetuneY + 0.50 - intro.vspacing * 4.5 - lines * intro.vspacing * intro.verror;
+		var zoffset = placer.finetuneX;
 		var col = 0;
 		var row = 0;
 		
-		if(intro.disposition == 'vertical') {
-			row = delta;
-			offset += delta;
-		}
+		var sign = placer.signs[delta];
 		
-		if(intro.disposition == 'horizontal') {
-			col = delta;
-			zoffset += delta;
-		}
-		
-		if(intro.disposition == 'grid') {
-			col = delta % side;
-			row = Math.floor(delta / side);
-			zoffset += col;
-			offset += row;
-		}
+		offset += sign.ry;
+		zoffset += sign.rx;
 
 		offset = gene.round_number(offset, intro.decimals);
+		zoffset = gene.round_number(zoffset, intro.decimals);
+		
+		if(offset < gene.offset_min || offset > gene.offset_max) {
+			gene.errors.push('&lt;offset&gt; out of range');
+		}
+		
+		if(zoffset < gene.zoffset_min || zoffset > gene.zoffset_max) {
+			gene.errors.push('&lt;zoffset&gt; out of range');
+		}
+
 		
 		return {
 			output: intro.incipit + '<offset=' + offset + '><zoffset=' + zoffset + '>',
-			col: col + 1,
-			row: row + 1,
+			col: sign.rx,
+			row: sign.ry,
 			offset: offset,
 			zoffset: zoffset,
 		};

@@ -1,20 +1,24 @@
 <!doctype html>
 <html>
 <head>
-	<title>CreatiSign Generator V3</title>
+	<title>CreatiSign Generator V3.1 BETA</title>
 	<meta charset="utf-8" />
+	<link href="css/placer.css?2384756823745" rel="stylesheet">
 	<link href="css/style.css?2384756823745" rel="stylesheet">
 	<script src="js/settings.js?2384756823745"></script>
+	<script src="js/placer.js?2384756823745"></script>
 	<script src="js/inter.js?2384756823745"></script>
 	<script src="js/color.js?2384756823745"></script>
+	<script src="js/timeoutlooper.js?2384756823745"></script>
 	<script src="js/gene.js?2384756823745"></script>
 </head>
 <body>
 	<div id="main">
 		<div id="interface"></div>
 		<div id="output">
-			<h1 id="heading">CreatiSign Generator - V3</h1>
+			<h1 id="heading">CreatiSign Generator - V3.1.beta</h1>
 			<p><a href="http://entuland.com/creatisign">Latest live version</a> - <a href="https://github.com/entuland/creatisprites" target="_blank">All versions on GitHub</a></p>
+			<p><strong style="color: red">THIS IS A BETA RELEASE FOR TESTING PURPOSES!<br>MAY SCRAMBLE YOUR PIXELS AND KILL YOUR CHIZZARDS!<br>CLICK <a href="http://entuland.com/creatisign" target="_blank">HERE</a> FOR THE CURRENT RELEASE</strong></p>
 			<p><strong>New! Watch my <a href="https://www.twitch.tv/entuland/videos/all" target="_blank">video tutorials on Twitch</a> if you dare!</strong></p>
 			<p><a href="http://entuland.com/creatisprites" target="_blank">Check out the Sprites Picker too!</a></p>
 			<p>This tool lets you convert images into codes that you can put into Arc Signs in the game <a href="http://store.steampowered.com/app/280790" target="_blank">Creativerse</a>, free to play on Steam</p>
@@ -33,42 +37,28 @@
 				<a href="http://entuland.com/creatisign/v1" target="_blank">V1 </a>
 			</p>
 			
-			<figure class="sourcePreview">
-				<figcaption>Source preview</figcaption>
-				<img id="sourcePreview">
-			</figure>
-			<div id="errors" class="notices"></div>
-			<figure style="display: none">
-				<figcaption>Working canvas</figcaption>
-				<canvas id="workingCanvas"></canvas>
-			</figure>
 			<figure class="resultsPreview">
 				<figcaption>Results preview</figcaption>
 				<canvas id="resultsPreview"></canvas>
 			</figure>
+			<figure style="display: none">
+				<figcaption>Working canvas</figcaption>
+				<canvas id="workingCanvas"></canvas>
+			</figure>
+			<div id="errors" class="notices"></div>
+			<figure class="sourcePreview">
+				<figcaption>Source preview</figcaption>
+				<img id="sourcePreview">
+			</figure>
 			<div id="textareas"></div>
 		</div>
-		<div id="placementcontainer">
-			<div id="grid">
-				<div id="placementPreview"></div>
-			</div>
-			<h2 style="text-align: center">Placement preview (approx)</h2>
-			<ul class="showhover">
-				<li>Signs (boxes with the number inside) are depicted seen from their <em>left</em> side
-				<li>(when an arc sign faces at you its <em>left</em> side is your <em>right</em> side)
-				<li>Offset goes from top (higher) to bottom (lower)
-				<li>Zoffset goes from left (higher) to right (lower)
-				<li>The green rectangle indicates the top of the resulting graphic and will extend vertically after executing to preview the graphics' height (approx)
-				<li>A red sign indicates a sign that will very likely exceed the offset or zoffset limits
-				<li>In any case, the textareas will be clearly marked if they exceed any limit
-			</ul>
-		</div>
+		<div id="placer-container"></div>
 		<div id="commands">
 			Select or drag image here: <input type="file" id="fileSelector">
 			<button id="execute">Execute</button>
 			<button id="reset">Reset settings?</button>
 		</div>
 	</div>
-	<div id="cover"><div>Working...</div></div>
+	<div id="cover"><div id="progress"></div></div>
 </body>
 </html>

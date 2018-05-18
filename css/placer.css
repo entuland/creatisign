@@ -1,0 +1,168 @@
+
+#placer {
+	font-family: monospace;
+	background: url(../img/grid.png) top left repeat;
+	background-color: #EEF;
+	position: fixed;
+	user-select: none;
+	border: 1px solid #000;
+	box-sizing: border-box;
+	right: 0;
+	bottom: 50px;
+	z-index: 1;
+	transform-origin: bottom right;
+	transform: scale(0.33, 0.33);
+}
+
+#placer:hover {
+	transform-origin: center center;
+	transform: scale(1, 1);
+	opacity: 1;
+}
+
+#placer ::selection {
+	background-color: transparent;
+}
+
+#placer-log {
+	position: fixed;
+	right: 0;
+	bottom: 50px;
+	background: #FAA;
+	top: 0;
+	overflow-y: scroll;
+	display: none;
+}
+
+#placer:hover #shifter,
+#placer:hover #placer-label-left,
+#placer:hover #placer-label-top {
+	display: block;
+}
+
+#placer-label-left,
+#placer-label-top {
+	background: #AFA;
+	position: absolute;
+	padding: 5px;
+	border: 1px solid #000;
+	display: none;
+}
+
+#placer-label-top {
+	right: 0;
+	top: 0;
+	left: 0;
+	transform: translateY(-100%);
+}
+
+#placer-label-left {
+	transform-origin: bottom left;
+	transform: rotate(-90deg);
+	left: 0;
+	bottom: 0;
+	right: 0;
+}
+
+#placer-label-top ul {
+	font-size: 80%;
+}
+
+#shifter {
+	background: #999;
+	border: 1px solid #000;
+	width: 150px;
+	height: 150px;
+	position: absolute;
+	transform: translate(-100%, -100%);
+	display: none;
+}
+
+#shifter button {
+	position: absolute;
+	width: 33.3%;
+	height: 33.3%;
+	font-size: 166%;
+	cursor: pointer;
+}
+
+.sign {
+	background: yellow;
+	text-align: center;
+	box-sizing: border-box;
+	border: 1px solid #000;
+	box-shadow: 2px 2px 2px #000;
+	position: absolute;
+	cursor: move;
+}
+
+#center {
+	background-color: #AAF;
+	position: absolute;
+	border: 1px dotted #999;
+	z-index: 1000;
+}
+
+#finetune {
+	background: transparent;
+	left: 0;
+	top: 0;
+	right: 0;
+	bottom: 0;
+	position: absolute;
+	z-index: 10000;
+	box-sizing: border-box;
+}
+
+#finetune:hover {
+	width: 200px;
+	height: 200px;
+	left: 50%;
+	top: 50%;
+	transform: translate(-50%, -50%);
+	background-color: #BBF;
+	background-image: url(../img/grid.png), url(../img/blackdot.png), url(../img/blackdot.png);
+	background-position: -1px -1px, center center, center center;
+	background-repeat: repeat, repeat-y, repeat-x;
+	background-size: 20px, 1px, 1px;
+	border: 1px solid #000;
+	box-shadow: 3px 3px 5px #000;
+}
+
+#centerimage,
+#finetuneimage {
+	position: absolute;
+	background: rgba(0, 255, 0, 0.5);
+	width: 5px;
+	height: 50px;
+	border: 1px dotted gray;
+	box-sizing: border-box;
+	left: 50%;
+	top: 50%;
+	box-shadow: 1px 1px 3px #000;
+	transform: translate(-50%, 0);
+}
+
+#centerimage {
+	transform: translate(-75%, 0);
+}
+
+#finetuneimage {
+	display: none;
+	height: 1000px;
+}
+
+#finetune:hover #finetuneimage {
+	display: block;
+}
+
+.off-area {
+	position: absolute;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	top: 0;
+	background: #FAA;
+	opacity: 0.5;
+	pointer-events: none;
+}

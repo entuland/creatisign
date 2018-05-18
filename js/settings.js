@@ -1,6 +1,6 @@
 'use strict';
 
-var creatiVersion = '3.0';
+var creatiVersion = '3.1 BETA';
 
 var settings = [
 
@@ -116,8 +116,13 @@ var settings = [
 		},
 		options: {
 			grid: 'GRID (Horizontal + Vertical)',
+			gridRight: 'GRID RIGHT',
+			gridBottom: 'GRID BOTTOM',
 			horizontal: 'H (Horizontal)',
+			horizontalCentered: 'HC (Horizontal Centered)',
 			vertical: 'V (Vertical)',
+			verticalCentered: 'VC (Vertical Centered)',
+			free: 'Free placement',
 		},
 		icon: 'img/disposition.png',
 		label: 'Sign disposition',
