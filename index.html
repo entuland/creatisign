@@ -1,45 +1,25 @@
 <!doctype html>
 <html>
 <head>
-	<title>CreatiSign Generator V3.2</title>
+	<title>CreatiSign Generator V3.3</title>
 	<meta charset="utf-8" />
-	<link href="css/placer.css?354275483475773" rel="stylesheet">
-	<link href="css/style.css?354275483475773" rel="stylesheet">
-	<script src="js/imgsrc.js?354275483475773"></script>
-	<script src="js/settings.js?354275483475773"></script>
-	<script src="js/placer.js?354275483475773"></script>
-	<script src="js/inter.js?354275483475773"></script>
-	<script src="js/color.js?354275483475773"></script>
-	<script src="js/timeoutlooper.js?354275483475773"></script>
-	<script src="js/gene.js?354275483475773"></script>
+	<link href="css/placer.css?74746738374687364" rel="stylesheet">
+	<link href="css/style.css?747467383746873648" rel="stylesheet">
+	<script src="js/imgsrc.js?74746738374687364"></script>
+	<script src="js/settings.js?74746738374687364"></script>
+	<script src="js/placer.js?74746738374687364"></script>
+	<script src="js/edit.js?74746738374687364"></script>
+	<script src="js/inter.js?74746738374687364"></script>
+	<script src="js/color.js?74746738374687364"></script>
+	<script src="js/timeoutlooper.js?74746738374687364"></script>
+	<script src="js/gene.js?74746738374687364"></script>
 </head>
 <body>
 	<div id="main">
 		<div id="interface"></div>
 		<div id="output">
-			<h1 id="heading">CreatiSign Generator - V3.2</h1>
-			<p><a href="http://entuland.com/creatisign">Latest live version</a> - <a href="https://github.com/entuland/creatisprites" target="_blank">All versions on GitHub</a></p>
-			<p><strong>Watch my <a href="https://www.twitch.tv/entuland/videos/all" target="_blank">video tutorials on Twitch</a> if you dare!</strong></p>
-			<p><a href="http://entuland.com/creatisign/guide" target="_blank">Guide about Arc Sign codes (WIP)</a></p>
-			<p><a href="http://entuland.com/creatisprites" target="_blank">Check out the Sprites Picker too!</a></p>
-			<p>This tool lets you convert images into codes that you can put into Arc Signs in the game <a href="http://store.steampowered.com/app/280790" target="_blank">Creativerse</a>, free to play on Steam</p>
-			<p>Select the image you want to convert to CreatiSign code (or drag it onto the file selector at the bottom of this page), then alter the settings as you please and click the "Execute" button.</p>
-			<p>The image will NOT be sent to any server. You can save this page on your desktop and use it offline too, if you're concerned about that :)</p>
-			<p>Only tested in Chrome, may work in other browsers. Some settings have additional info in their tooltips (hover on them and wait a little).</p>
-			<p><a href="http://steamcommunity.com/app/280790/discussions/3/1479857071263583178/" target="_blank">CreatiSign Generator discussion</a> (on Steam forum), <a href="http://entuland.com/creatisign/changelog.txt" target="_blank">Changelog</a> (txt file)</p>
-			
-			<p>Previous versions:
-				<a href="http://entuland.com/creatisign/v3.1.beta" target="_blank">V3.1.BETA</a>,
-				<a href="http://entuland.com/creatisign/v3" target="_blank">V3</a>,
-				<a href="http://entuland.com/creatisign/v2.6" target="_blank">V2.6</a>,
-				<a href="http://entuland.com/creatisign/v2.5" target="_blank">V2.5</a>,
-				<a href="http://entuland.com/creatisign/v2.4" target="_blank">V2.4</a>,
-				<a href="http://entuland.com/creatisign/v2.3" target="_blank">V2.3</a>,
-				<a href="http://entuland.com/creatisign/v2.2" target="_blank">V2.2</a>,
-				<a href="http://entuland.com/creatisign/v2.1" target="_blank">V2.1</a>,
-				<a href="http://entuland.com/creatisign/v1" target="_blank">V1</a>
-			</p>
-			
+			<h1 id="heading">CreatiSign Generator V3.3</h1>
+			<p><a href="http://entuland.com/creatisign">Latest live version</a> - <a href="https://github.com/entuland/creatisprites" target="_blank">All versions on GitHub</a></p> <button class="rounded shadow" id="info-button">Help! What's this?</button> <a class="rounded shadow" target="_blank" href="http://entuland.com/en/support-entuland">Want to support me?</a> <a class="rounded shadow" style="background: #faa" target="_blank" href="http://entuland.com/creaticount">New! CreatiCount Tool!</a><hr>
 			<figure class="resultsPreview">
 				<figcaption>Results preview</figcaption>
 				<canvas id="resultsPreview"></canvas>
@@ -48,20 +28,95 @@
 				<figcaption>Working canvas</figcaption>
 				<canvas id="workingCanvas"></canvas>
 			</figure>
+			<figure style="display: none">
+				<figcaption>Edit canvas</figcaption>
+				<canvas id="editcanvas"></canvas>
+			</figure>
 			<div id="errors" class="notices"></div>
 			<figure class="sourcePreview">
 				<figcaption>Source preview</figcaption>
-				<img id="sourcePreview">
+				<div id="cropcontainer">
+					<img id="sourcePreview">
+					<div id="cropmouse"><div id="cropmask" title="Click and drag for manual cropping"></div></div>
+				</div>
 			</figure>
+			<div id="edit-controls">
+				<label class="rounded shadow" title="Show or hide source settings (they will be used in any case)"><input type="checkbox" id="showsourcesettings">Show source settings</label>
+				<p id="sectionnotice"></p>
+				<table id="sourcesettings" style="display: none">
+					<tr>
+						<td colspan=3><label class="rounded shadow" title="Enable this to get a numeric box to specify the width of the source section"><input type="checkbox" id="forcewidth">Force source section width</label></td>
+						<td colspan=3><label class="rounded shadow" style="display: none" title="The source will be scaled to this width before getting processed (remember that the autosize flag in the generation options may still give you a different amount of pixels, disable it if you know what it does)">Forced width: <input type="number" id="sectionwidth" value="100" min="1" step="1"></label></td>
+					</tr>					<tr>
+						<td colspan=3><label class="rounded shadow" title="Split the source in multiple columns for processing sections separately">Cols: <input type="number" id="splitcolumns" value="1"  min="1" step="1"></label></td>
+						<td colspan=3><label class="rounded shadow" title="Split the source in multiple rows for processing sections separately">Rows: <input type="number" id="splitrows" value="1"  min="1" step="1"></label></td>
+					</tr>
+					<tr>
+						<td colspan=2><button class="rounded shadow" id="rotateleft" title="Rotate the whole source image 90 degrees counterclockwise">Rotate left</button></td>
+						<td colspan=2><label class="rounded shadow">Crop top: <input type="number" id="croptop" value="0"  min="0" step="1"></label></td>
+						<td colspan=2><button class="rounded shadow" id="rotateright" title="Rotate the whole source image 90 degrees clockwise">Rotate right</button></td>
+					</tr>
+					<tr>
+						<td colspan=2><label class="rounded shadow">Crop left: <input type="number" id="cropleft" value="0"  min="0" step="1"></label></td>
+						<td colspan=2><label class="rounded shadow" title="Change this value to give equal cropping on all sides">Crop all: <input type="number" id="cropall" value=""  min="0" step="1"></label></td>
+						<td colspan=2><label class="rounded shadow">Crop right: <input type="number" id="cropright" value="0"  min="0" step="1"></label></td>
+					</tr>
+					<tr>
+						<td colspan=2><button class="rounded shadow" id="mirrorhorizontal" title="Flip the image horizontally (left-right)">Mirror horizontal</button></td>
+						<td colspan=2><label class="rounded shadow">Crop bottom: <input type="number" id="cropbottom" value="0"  min="0" step="1"></label></td>
+						<td colspan=2><button class="rounded shadow" id="mirrorvertical" title="Flip the image vertically (top-bottom)">Mirror vertical</button></td>
+					</tr>
+					<tr>
+						<td colspan=6><label class="rounded shadow" title="Insert one or more hex values for colors to convert to transparent, separate them as you better prefer. Imprecise feature, use a real image editing program for better control">Transparent colors:<br><textarea id="transparents"></textarea></label></td>
+					</tr>
+				</table>
+			</div>
 			<div id="textareas"></div>
 		</div>
 		<div id="placer-container"></div>
 		<div id="commands">
+			<button id="reset" title="Click twice to really reset. Only resets generation settings (left-hand-side settings)">Reset settings?</button>
 			Select or drag image here: <input type="file" id="fileSelector">
 			<button id="execute">Execute</button>
-			<button id="reset">Reset settings?</button>
 		</div>
 	</div>
 	<div id="cover"><div id="progress"></div></div>
+	<div id="info-cover" class="cover" style="display: none" title="click here to close"></div>
+	<div id="info-content" class="cover-content rounded shadow" style="display: none">
+		<h2>CreatiSign Generator V3.3</h2>
+		<p>This tool lets you convert images into codes that you can put into Arc Signs in the game <a href="http://store.steampowered.com/app/280790" target="_blank">Creativerse</a>, free to play on Steam</p>
+		<p>Check out the <a href="http://entuland.com/creatisprites" target="_blank"><strong>CreatiSprites Picker</strong></a> to easily choose and arrange sprites and the <a href="http://entuland.com/creaticount" target="_blank"><strong>CreatiCount Tool</strong></a> to get some help counting materials and their ingredients for your builds!</p>
+		<p>This generator can be very simple or very complex to use, it has a lot of settings. You can watch my <a href="https://www.twitch.tv/entuland/videos/all" target="_blank">video tutorials on Twitch</a> and you can also read this work-in-progress <a href="http://entuland.com/creatisign/guide" target="_blank">guide about Arc Sign codes</a> to get further insight about the stuff you'll be dealing with.</p>
+		<h2>Main usage</h2>
+		<p>Select the image you want to convert to CreatiSign code (or drag it onto the file selector at the bottom of this page), then alter the settings as you please and click the "Execute" button.</p>
+		<p>Once the yellow textareas get filled with codes copy them one at a time and paste them into Arc Signs in the game. You cannot use the mouse to paste in the game, you need to select the Arc Sign content area and use the CONTROL+V keyboard shortcut (COMMAND+V if you're on Mac).</p>
+		<p>Only tested in Chrome, may work in other browsers. Some settings have additional info in their tooltips (hover on them and wait a little).</p>
+		<h2>Right-hand-side Options (source options)</h2>
+		<p>Once you've loaded an image you can crop it (either using the numeric values or by click and drag in the image preview), rotate, mirror and divide it into different sections (by using the cols / rows values). You can then click on a section to select it to be processed.</p>
+		<p>You can also force the width of that section to a specific value: this will let you control the width of the final output only when used along with the autosize option disabled; you can also use it to reduce the resolution of the source, but it's not of great use.</p>
+		<p>If you want particular colors to get converted to transparent type their values (in whatever RGBA format) into the appropriate textbox, separated by a space or anything that isn't an hexadecimal digit. This is a limited feature that only works decently if you have a uniform background, and the matching will be performed against the values produced by the generation code (that is, they will be removed only if they match exactly the values that you'll get in the yellow textareas)</p>
+		<p>None of these options will be stored across page reloads. Refresh the page to reset them to their default values.</p>
+		<h2>Left-hand-side Options (generation options)</h2>
+		<p>These options decide how to convert the section you have chosen in the right-hand-side interface. The <a href="https://www.twitch.tv/entuland/videos/all" target="_blank">video tutorials</a> and the <a href="http://entuland.com/creatisign/guide" target="_blank">guide</a> should provide you with more info about these options.</p>
+		<p>These options will be stored across page reloads. Click twice on the "Reset settings?" button to get the default values back.</p>
+		<h2>Placement Preview Area</h2>
+		<p>The semiopaque square on the bottom-right corner can be hovered to enlarge it and get access to the actual placement of single Arc Signs. More instructions there, hover it and check the green box on its top.</p>
+		<h2>Notes / Links</h2>
+		<p>The image will NOT be sent to any server. You can save this page on your desktop and use it offline too, if you're concerned about that :)</p>
+		<p><a href="http://steamcommunity.com/app/280790/discussions/3/1479857071263583178/" target="_blank">CreatiSign Generator discussion</a> (on Steam forum), <a href="http://entuland.com/creatisign/changelog.txt" target="_blank">Changelog</a> (txt file)</p>
+		
+		<p>Previous versions:
+			<a href="http://entuland.com/creatisign/v3.2" target="_blank">V3.2</a>,
+			<a href="http://entuland.com/creatisign/v3.1.beta" target="_blank">V3.1.BETA</a>,
+			<a href="http://entuland.com/creatisign/v3" target="_blank">V3</a>,
+			<a href="http://entuland.com/creatisign/v2.6" target="_blank">V2.6</a>,
+			<a href="http://entuland.com/creatisign/v2.5" target="_blank">V2.5</a>,
+			<a href="http://entuland.com/creatisign/v2.4" target="_blank">V2.4</a>,
+			<a href="http://entuland.com/creatisign/v2.3" target="_blank">V2.3</a>,
+			<a href="http://entuland.com/creatisign/v2.2" target="_blank">V2.2</a>,
+			<a href="http://entuland.com/creatisign/v2.1" target="_blank">V2.1</a>,
+			<a href="http://entuland.com/creatisign/v1" target="_blank">V1</a>
+		</p>
+	</div>
 </body>
 </html>

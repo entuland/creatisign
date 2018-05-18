@@ -16,10 +16,24 @@ var inter = {
 		inter.progress = document.querySelector('#progress');
 		inter.reset = document.querySelector('#reset');
 		inter.reset.addEventListener('click', inter.checkReset);
+		inter.initInfo();
 		inter.assignFurtherControls();
-		var title = 'CreatiSign Generator Ver. ' + creatiVersion;
-		document.querySelector('#heading').innerText = title;
-		window.document.title = 'CreatiSignGen V' + creatiVersion;
+		edit.init();
+	},
+	
+	initInfo: function() {
+		inter.infoButton = document.querySelector('#info-button');
+		inter.infoCover = document.querySelector('#info-cover');
+		inter.infoContent = document.querySelector('#info-content');
+		
+		inter.infoButton.addEventListener('click', function() {
+			inter.infoCover.style.display = 'block';
+			inter.infoContent.style.display = 'block';
+		});
+		inter.infoCover.addEventListener('click', function() {
+			inter.infoCover.style.display = 'none';
+			inter.infoContent.style.display = 'none';
+		});
 	},
 	
 	checkReset: function() {
@@ -217,14 +231,6 @@ var inter = {
 			el.addEventListener('change', inter.delayedStoreSettings);
 		}
 		inter.els.settingsMode.addEventListener('change', inter.updateSettingsMode);
-		var inputs = document.querySelectorAll('input');
-		for(var i = 0; i < inputs.length; ++i) {
-			inputs[i].addEventListener('focus', function() { 
-				try {
-					this.select() 
-				} catch(e) { /* no-op */ }
-			});
-		}
 		inter.els.disposition.addEventListener('change', inter.updateDisposition);
 		inter.els.offset.addEventListener('change', inter.updateShift);
 		inter.els.zoffset.addEventListener('change', inter.updateShift);
@@ -260,6 +266,14 @@ var inter = {
 			inter.els.insaneSettings.style.display = 'none';
 		}
 	},
+	
+	getRect: function(el) {
+		var rect = el.getBoundingClientRect();
+		rect.x += window.scrollX;
+		rect.y += window.scrollY;
+		return rect;
+	},
+
 };
 
 window.addEventListener('load', inter.init);

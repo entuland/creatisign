@@ -9,8 +9,11 @@ var gene = {
 	init: function() {	
 		gene.reader = new FileReader();
 		gene.source = false;
-		gene.reader.addEventListener("load", function () {
+		gene.reader.addEventListener('load', function () {
 			gene.source = new Image;
+			gene.source.addEventListener('load', function() {
+				edit.setSource(gene.source);				
+			});
 			gene.source.src = gene.reader.result;
 			inter.els.sourcePreview.src = gene.source.src;
 		}, false);
@@ -18,21 +21,6 @@ var gene = {
 				
 		inter.els.executeButton.addEventListener('click', gene.execute);
 		
-	},
-	
-	attachPlacementPreview: function() {
-		inter.els.offset.addEventListener('change', gene.computeDeferredPlacement);
-		inter.els.zoffset.addEventListener('change', gene.computeDeferredPlacement);
-		inter.els.slices.addEventListener('change', gene.computeDeferredPlacement);
-		inter.els.disposition.addEventListener('change', gene.computeDeferredPlacement);
-	},
-	
-	computeDeferredPlacement: function() {
-		clearTimeout(gene.placement_timeout);		
-		gene.placement_timeout = setTimeout(gene.computePlacement, 250);
-	},
-	
-	computePlacement: function() {
 	},
 	
 	loadsource: function() {
@@ -51,6 +39,7 @@ var gene = {
 		gene.gammaCorrection = 1 / parseFloat(inter.els.gammaCorrection.value);
 		gene.alphaCorrection = 1 / parseFloat(inter.els.alphaCorrection.value);
 		gene.useshort = inter.els.shortCodes.checked;
+		gene.source = edit.getSource();
 	},
 	
 	execute: function() {
@@ -241,7 +230,6 @@ var gene = {
 			gene.displayResult(results[i]);
 		}
 		var last = results[results.length - 1];
-		console.log(last);
 		var height = last.h * last.intro.vspacing * placer.size;
 		placer.centerimage.style.height = '' + height + 'px';
 		placer.finetuneimage.style.height = '' + (height * 8) + 'px';
@@ -385,6 +373,11 @@ var gene = {
 		inter.els.result.width = w;
 		inter.els.result.height = h;
 		inter.els.resultctx.clearRect(0, 0, w, h);
+		
+		// inter.els.workingctx.imageSmoothingEnabled = false;
+		// inter.els.resultctx.imageSmoothingEnabled = false;
+		// inter.els.workingctx.translate(0.5, 0.5);
+		// inter.els.resultctx.translate(0.5, 0.5);
 	},
 	
 	prepareCodeIntro: function() {
@@ -479,7 +472,6 @@ var gene = {
 			b: p[2],
 			a: p[3]
 		};
-		//console.log(rgba);
 		
 		if(inter.els.grayScale.checked) {
 			rgba.r = rgba.g = rgba.b = 0.2126 * rgba.r + 0.7152 * rgba.g + 0.0722 * rgba.b;
@@ -495,8 +487,6 @@ var gene = {
 			rgba.a = 255 * Math.pow(( rgba.a / 255), gene.alphaCorrection);
 		}
 		
-		//console.log(rgba);
-		
 		var longValue = color.rgbaToHex(rgba);
 		var shortValue = color.rgbaToHexShort(rgba);
 		var expanded = color.expandedHex(shortValue);
@@ -505,8 +495,8 @@ var gene = {
 		} else {
 			hex = longValue;
 		}
-
-		return hex
+		
+		return edit.filterColor(hex);
 	},
 
 };

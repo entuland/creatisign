@@ -1,185 +1,300 @@
-body {
-	font-family: sans-serif;
-	background: #eee;
-	padding-bottom: 50px;
-}
+	* {
+		box-sizing: border-box;
+	}
+	
+	body {
+		font-family: sans-serif;
+		background: #eee;
+		padding-bottom: 50px;
+	}
 
-textarea {
-	background: yellow;
-	width: 100%;
-	height: 5em;
-}
+	#textareas textarea {
+		background: yellow;
+	}
 
-#textareas {
-	margin-left: 20%;
-	margin-right: 20%;
-}
+	textarea {
+		width: 100%;
+		height: 5em;
+	}
 
-.error {
-	background: red !important;
-}
- 
-#cover {
-	background: rgba(0, 0, 0, 0.8);
-	left: 0;
-	right: 0;
-	top: 0;
-	bottom: 0;
-	position: fixed;
-	display: none;
-	z-index: 100;
-	text-align: center;
-}
+	#textareas {
+		margin-left: 20%;
+		margin-right: 20%;
+	}
 
-#progress {
-	position: fixed;
-	left: 50%;
-	top: 50%;
-	color: white;
-	font-size: 300%;
-	transform: translate(-50%, -50%);
-}
+	.error {
+		background: red !important;
+	}
+	 
+	#cover {
+		background: rgba(0, 0, 0, 0.8);
+		left: 0;
+		right: 0;
+		top: 0;
+		bottom: 0;
+		position: fixed;
+		display: none;
+		z-index: 100;
+		text-align: center;
+	}
 
-#progress::before {
-	content: "Working...";
-	display: block;
-}
+	#progress {
+		position: fixed;
+		left: 50%;
+		top: 50%;
+		color: white;
+		font-size: 300%;
+		transform: translate(-50%, -50%);
+	}
 
-#sourcePreview {
-	max-width: 100%;
-	max-height: 300px;
-}
+	#progress::before {
+		content: "Working...";
+		display: block;
+	}
 
-#output img, canvas {
-	background: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAwAAAAMCAYAAABWdVznAAAAH0lEQVQokWNYtGjRf2w4ISEBK2YYkRpwSeAyaERqAABq/mkwVExPHAAAAABJRU5ErkJggg==') top left repeat;
-}
+	#sourcePreview {
+		max-width: 100%;
+		max-height: 300px;
+	}
 
-.settingsContainer > small {
-	text-align: center;
-	display: block;
-	font-variant: small-caps;
-}
+	#output img, canvas {
+		background: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAwAAAAMCAYAAABWdVznAAAAH0lEQVQokWNYtGjRf2w4ISEBK2YYkRpwSeAyaERqAABq/mkwVExPHAAAAABJRU5ErkJggg==') top left repeat;
+	}
 
-.settingsContainer {
-	margin: 5px;
-	padding: 5px;
-	padding-top: 20px;
-	display: none;
-}
+	.settingsContainer > small {
+		text-align: center;
+		display: block;
+		font-variant: small-caps;
+	}
 
-#interface {
-	position: absolute;
-	left: 0;
-	top: 0;
-	width: 33%;
-	overflow-x: hidden;
-}
+	.settingsContainer {
+		margin: 5px;
+		padding: 5px;
+		padding-top: 20px;
+		display: none;
+	}
 
-#output {
-	position: absolute;
-	right: 0;
-	top: 0;
-	width: 66%;
-	padding: 1em;
-	box-sizing: border-box;
-}
+	#interface {
+		position: absolute;
+		left: 0;
+		top: 0;
+		width: 33%;
+		overflow-x: hidden;
+	}
 
-#interface, #output {
-	bottom: 50px;
-	padding-bottom: 10em;
-	overflow-y: scroll;
-}
+	#output {
+		position: absolute;
+		right: 0;
+		top: 0;
+		width: 66%;
+		padding: 1em;
+		box-sizing: border-box;
+	}
 
-#basicSettings {
-	display: block;
-}
+	#interface, #output {
+		bottom: 50px;
+		padding-bottom: 10em;
+		overflow-y: scroll;
+	}
 
-#commands {
-	position: fixed;
-	bottom: 0;
-	left: 0;
-	right: 0;
-	height: 50px;
-	z-index: 10;
-	text-align: center;
-	border-top: 1px solid black;
-	box-shadow: 0 -2px 2px #999;
-	padding-top: 5px;
-	background: #DDD;
-	box-sizing: border-box;
-}
+	#basicSettings {
+		display: block;
+	}
 
-#commands button {
-	font-variant: capitalize;
-	background-color: #AFA;
-	padding: 5px;
-	border-radius: 3px;
-	font-size: 130%;
-	border: 1px solid black;
-	box-shadow: 2px 2px 2px #999;
-	cursor: pointer;
-	vertical-align: top;
-}
+	#commands {
+		position: fixed;
+		bottom: 0;
+		left: 0;
+		right: 0;
+		height: 50px;
+		z-index: 10;
+		text-align: center;
+		border-top: 1px solid black;
+		box-shadow: 0 -2px 2px #999;
+		padding-top: 5px;
+		background: #DDD;
+		box-sizing: border-box;
+	}
 
-#fileSelector {
-	height: 80%;
-	width: 50%;
-	background: #FF0;
-	border: 1px solid black;
-	vertical-align: top;
-}
+	#commands button {
+		font-variant: capitalize;
+		background-color: #AFA;
+		padding: 5px;
+		border-radius: 3px;
+		font-size: 130%;
+		border: 1px solid black;
+		box-shadow: 2px 2px 2px #999;
+		cursor: pointer;
+		vertical-align: top;
+	}
 
-.wrapper {
-	padding: 10px;
-	border: 1px solid black;
-	vertical-align: top;
-	margin: 3px;
-	border-radius: 10px;
-	box-sizing: border-box;
-	background: #AFA;
-	box-shadow: 2px 2px 2px #999;
-	display: flex;
-}
+	#fileSelector {
+		height: 80%;
+		width: 50%;
+		background: #FF0;
+		border: 1px solid black;
+		vertical-align: top;
+	}
 
-.wrapper > * {
-	flex: 1;
-}
+	.wrapper {
+		padding: 10px;
+		border: 1px solid black;
+		vertical-align: top;
+		margin: 3px;
+		border-radius: 10px;
+		box-sizing: border-box;
+		background: #AFA;
+		box-shadow: 2px 2px 2px #999;
+		display: flex;
+	}
 
-.wrapper > *,
-label input,
-label select {
-	display: block;
-	width: 100%;
-	text-align: center;
-	font-size: 120%;
-}
+	.wrapper > * {
+		flex: 1;
+	}
 
-.icon {
-	max-width: 20%;
-	padding-right: 10px;
-}
+	#interface .wrapper > *,
+	#interface label input,
+	#interface label select {
+		display: block;
+		width: 100%;
+		text-align: center;
+		font-size: 120%;
+	}
 
-.icon img {
-	width: 100%;
-}
+	.icon {
+		max-width: 20%;
+		padding-right: 10px;
+	}
 
-label {
-	font-variant: small-caps;
-	cursor: pointer;
-	display: block;
-}
+	.icon img {
+		width: 100%;
+	}
 
-label [type=checkbox] {
-	cursor: pointer;
-	transform: scale(2);
-}
+	#interface label {
+		font-variant: small-caps;
+		cursor: pointer;
+		display: block;
+	}
 
-label input, label select {
-	margin-top: 10px;
-}
+	#interface label [type=checkbox] {
+		cursor: pointer;
+		transform: scale(2);
+	}
 
+	#interface label input,
+	#interface label select {
+		margin-top: 10px;
+	}
+	
+	#output button {
+		padding: 3px;
+		font-weight: bolder;
+		background: #AFA;
+		cursor: pointer;
+		display: inline-block;
+		margin: 3px;
+		font-size: 1em;
+	}
 
-.notices {
-	color: #600;
-	font-weight: bolder;
-}
+	#output label,
+	#output button {
+		padding: 3px;
+		font-weight: bolder;
+		background: #AFA;
+		cursor: pointer;
+		display: inline-block;
+		margin: 3px;
+		font-size: 1em;
+	}
+	
+	#edit-controls table td {
+		text-align: right;
+	}
+	
+	#edit-controls table label,
+	#edit-controls table button {
+		width: 100%;
+	}
+	
+	#edit-controls table input {
+		width: 4em;
+	}
+	
+	#cropcontainer {
+		position: relative;
+	}
+	
+	#cropmouse {
+		position: absolute;
+		left: 0;
+		top: 0;
+		display: none;
+	}
+	
+	#cropmask {
+		position: absolute;
+		border: 0 solid rgba(255, 255, 255, 0.5);
+		left: 0;
+		top: 0;
+		right: 0;
+		bottom: 0;
+		cursor: crosshair;
+		line-height: 0;
+	}
+	
+	.splitsection {
+		display: inline-block;
+		border: 1px solid red;
+		cursor: pointer;
+		background: rgba(0, 255, 0, 0.33);
+	}
+	
+	.splitsection.selected {
+		background: transparent;
+	}
+	
+	.notices {
+		color: #600;
+		font-weight: bolder;
+	}
+		
+	.rounded {
+		border-radius: 3px;
+		border: 1px solid black;
+	}
+	
+	.shadow {
+		box-shadow: 2px 2px 2px #999;
+	}
+	
+	a.rounded.shadow {
+		background: yellow;
+		padding: 3px;
+		font-weight: bolder;
+		color: black;
+		text-decoration: none;
+	}
+
+	.cover {
+		z-index: 10;
+		position: fixed;
+		left: 0;
+		top: 0;
+		right: 0;
+		bottom: 0;
+		background-color: rgba(0, 0, 0, 0.6);
+		cursor: not-allowed;
+	}
+
+	.cover-content {
+		position: fixed;
+		z-index: 20;
+		max-height: 80%;
+		padding: 15px;
+		width: 75%;
+		left: 50%;
+		top: 50%;
+		transform: translate(-50%, -50%);
+		background: #EEE;
+		overflow-y: scroll;
+	}

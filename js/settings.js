@@ -1,6 +1,6 @@
 'use strict';
 
-var creatiVersion = '3.2';
+var creatiVersion = '3.3';
 
 var settings = [
 
@@ -13,7 +13,7 @@ var settings = [
 			'class': 'settingsContainer',
 		},
 		noWrapper: true,
-		html: '<small>Basic Settings</small>',
+		html: '<h2>Generation Settings</h2><small>Basic Settings</small>',
 		parent: '#interface',
 	},
 	{

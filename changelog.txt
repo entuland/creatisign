@@ -3,6 +3,13 @@ Proudly made in Sardinia (Italy) by Entuland (entuland@gmail.com)
 
 Changelog:
 
+V3.3:
+	- added whole new section for source editing: cropping, rotation, mirroring, source-width control, splitting image into multiple sections to be processed separately
+	- moved most of the info into dedicated overlay
+	- added a bit of instructions in the above mentioned overlay
+	- moved reset settings button to the left (cause it only applies to the left-hand-side settings, i.e. the generation settings)
+	- removed the obnoxious "select all on focus" for regular textboxes, only applies to yellow textareas now
+
 V3.2:
 	- free placement of arc signs now gets restored properly across page reloads
 	- arc signs get marked in red after the processing only if they actually overflow any limit
