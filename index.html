@@ -1,96 +1,12 @@
 <!doctype html>
 <html>
 <head>
-	<title>CreatiSign Generator V1</title>
+	<title>CreatiSign Generator V2.1</title>
 	<meta charset="utf-8" />
-	<script>
-	function rgbToHex(r, g, b) {
-		if (r > 255 || g > 255 || b > 255)
-			throw "Invalid color component";
-		return ((r << 16) | (g << 8) | b).toString(16);
-	}
-		
-	function previewFile() {
-	
-		var preview = document.querySelector('img');
-		var canvas = document.querySelector('canvas');
-		var context = canvas.getContext('2d');
-		var textarea = document.querySelector('textarea');
-		var file    = document.querySelector('input[type=file]').files[0];
-		var reader  = new FileReader();
-		var output = '';
-
-		function readPixel(x, y) {
-			var p = context.getImageData(x, y, 1, 1).data;
-			var hex = "#" + ("000000" + rgbToHex(p[0], p[1], p[2])).slice(-6);
-			return hex;
-		}
-
-		reader.addEventListener("load", function () {
-			preview.src = reader.result;
-		}, false);
-
-		if (file) {
-			reader.readAsDataURL(file);
-		}
-		
-		preview.onload = function() {
-			var w = canvas.width = preview.width;
-			var h = canvas.height = preview.height;
-			context.drawImage(preview, 0, 0, preview.width, preview.height);
-			imageToMatrix(w, h);
-		}
-		
-		function prepareMark() {
-			output += '<size=0.4><mspace=4.5em><line-height=94%><#00000000>';
-		}
-		
-		function addMark(hex) {
-			output += '<mark=' + hex.toUpperCase() + '>';
-		}
-		
-		function addCounter(counter) {
-			output += counter;
-		}
-		
-		function closeLine() {
-			output += '\n';
-		}
-		
-		function closeMark() {
-			output += '<#000000FF>';
-		}
-		
-		function imageToMatrix(w, h) {
-			prepareMark();
-			var matrix = new Array(h);
-			var counter = 0;
-			for(var y = 0; y < h; ++y) {
-				matrix[y] = new Array(w);
-				for(var x = 0; x < w; ++x) {
-					matrix[y][x] = readPixel(x, y);
-					if(x > 0 && matrix[y][x] == matrix[y][x-1]
-							|| x == 0 && y > 0 && matrix[y][x] == matrix[y-1][x]) {
-						++counter;
-						if(counter > 9) {
-							counter = 0;
-						}
-					} else {
-						counter = 0;
-						addMark(matrix[y][x]);
-					}
-					addCounter(counter);
-				}
-				closeLine();
-			}
-			closeMark();
-			textarea.innerHTML = output;
-			var charcount = document.querySelector("#charcount");
-			charcount.innerHTML = "char count: " + output.length;
-		}
-	}
-	</script>
 	<style>
+	body {
+		font-family: sans-serif;
+	}
 	canvas {
 	  image-rendering: optimizeSpeed; 
 	  image-rendering: -moz-crisp-edges; 
@@ -100,19 +16,224 @@
 	  -ms-interpolation-mode: nearest-neighbor;
 	}
 	textarea {
+		display: none;
 		width: 100%;
 		height: 20em;
+	}
+	th {
+		text-align: right;
+		padding-right: 1em;
+	}
+	input[type=file] {
+		background-color: yellow;
 	}
 	</style>
 </head>
 <body>
-<h1>CreatiSign</h1>
+<h1>CreatiSign Generator - V2.1</h1>
 <p><a href="http://entuland.com/creatisign">Latest live version</a> - <a href="https://github.com/entuland/creatisprites" target="_blank">All versions on GitHub</a></p>
-Select the image you want to convert to CreatiSign code (or drag it onto the file selector) - all of the work will be done by your browser and there isn't so much room in Arc Signs, so use a very small image (32x32 max). Even in that case, if the image has many color variations, you may end up hitting the Arc Sign character limit. The image will NOT be sent to any server. You can save this page on your desktop and use it offline too, if you're concerned about that :)<hr>
-<input type="file" onchange="previewFile()"><hr>
+<p>Select the image you want to convert to CreatiSign code (or drag it onto the file selector), then alter the settings as you please and click "Execute" at the bottom of this page.</p>
+<p>The image will NOT be sent to any server. You can save this page on your desktop and use it offline too, if you're concerned about that :)</p>
+<p>Only tested in Chrome, may work in other browsers.</p>
+<table>
+	<tbody>
+		<tr><th>Input image:</th><td><input type="file" id="imagefile"> &#8592; select or drag the image here</td></tr>
+		<tr><th>&lt;width&gt; tag:</th><td><input type="number" id="width" min="0" step="0.1" value="8"> <small>this affects the amount of horizontal blocks the code will be allowed to grow, safe to keep this large-ish</small></td></tr>
+		<tr><th>Pixel size:</th><td><input type="number" id="pixelsize" min="0" step="0.1" value="2"> <small>(a pixel of size 1 is way smaller than one block, just for reference)</small></td></tr>
+		<tr><th>Spacing tweak (percent):</th><td><input type="number" id="tweak" step="1" value="10"> <small>values lower than 10 start to show the spacing grid between pixels, negative values allowed</small></td></tr>
+		<tr><th>Max decimals after tweaking:</th><td><input type="number" id="decimals" min="0" step="1" value="2"> <small>rounding for the three dependant tags (&lt;size&gt;, &lt;mspace&gt; and &lt;line-height&gt;)</small></td></tr>
+		<tr><th></th><td><label><input type="checkbox" id="shortcolors" checked> Always use short color codes</label> - <small>helps reducing the code size, but can alter the colors of your image</small></td></tr>
+		<tr><th></th><td><label><input type="checkbox" id="autosize" checked> Automatically compute largest possible resolution</label> - <small>necessary for large images but may blur pixel art; if you leave this off and try to convert large images your browser will likely hang or crash, you've been warned!</small></td></tr>
+	</tbody>
+</table>
+<hr>
 <img src="" style="display: none"><canvas></canvas><hr>
-Once you see text appearing down here in the textarea, select all of it, copy it and paste it in your Arc Sign, then tweak it as you please. A character count will also appear down here when the work is done.<hr>
-<textarea></textarea>
+<textarea onfocus="this.select()"></textarea>
 <p id="charcount"></p>
+<script>	
+	var preview = document.querySelector('img');
+	var canvas = document.querySelector('canvas');
+	canvas.height = 0;
+	canvas.width = 0;
+	var context = canvas.getContext('2d');
+	var textarea = document.querySelector('textarea');
+	var autosize = document.querySelector('#autosize');
+	var charcount = document.querySelector("#charcount");
+	var limit = 10000;
+
+	var reader  = new FileReader();
+	var output = '';
+
+	reader.addEventListener("load", function () {
+		preview.src = reader.result;
+	}, false);
+
+	function notice(w, h) {
+		setTimeout(function() {
+			charcount.innerHTML += "Attempting size (" + w + ", " + h + ")<br>";
+		}, 1);
+	}
+	
+	preview.onload = function() {
+		var numchars = 0;
+		var w = preview.width;
+		var h = preview.height;
+		var ratio = 1.0 * h / w;
+		if(!autosize.checked) {
+			numchars = attempt(w, h);
+		} else {
+			for(w = 0; w < preview.width; w += 10) {
+				h = Math.round(w * ratio);
+				numchars = attempt(w, h);
+				if(numchars > limit) {
+					var maxw = w - 10;
+					for(; w >= maxw; --w) {
+						h = Math.round(w * ratio);
+						numchars = attempt(w, h);
+						if(numchars <= limit) {
+							break;
+						}
+					}
+					break;
+				}
+			}
+		}
+		textarea.style.display = 'block';
+		setTimeout(function() {
+			charcount.innerHTML = 'Done! Text length: ' + numchars + ' (' + w + ', ' + h + ')';
+		}, 1);
+		return;
+
+	}
+
+	function attempt(w, h) {
+		notice(w, h);
+		canvas.width = w;
+		canvas.height = h;
+		context.clearRect(0, 0, w, h);
+		context.drawImage(preview, 0, 0, w, h);
+		return imageToMatrix(w, h);
+	}
+	
+	function shortHex(hex) {
+		if(hex % 17 > 7) {
+			hex = 17 + hex - hex % 17;
+		} else {
+			hex = hex - hex % 17;
+		}
+		return ('' + hex.toString(16)).slice(0, 1);
+	}
+	
+	function expandedHex(hex) {
+		var result = '#';
+		for(var i = 1; i < hex.length; ++i) {
+			result += hex[i] + hex[i];
+		}
+		return result;
+	}
+	
+	function rgbaToHex(r, g, b, a) {
+		if (r > 255 || g > 255 || b > 255 || a > 255) {
+			throw 'Invalid color component';
+		}
+		var result = '';		
+		if(a < 255) {
+			result = (r << 32) | (g << 16) | (b << 8) | a;		
+			return '#' + ('00000000' + result.toString(16)).slice(-8);
+		}
+		result = (r << 16) | (g << 8) | b;
+		return '#' + ('000000' + result.toString(16)).slice(-6);
+	}
+
+	function rgbaToHexShort(r, g, b, a) {
+		if (r > 255 || g > 255 || b > 255 || a > 255) {
+			throw 'Invalid color component';
+		}
+		var result = '';		
+		r = shortHex(r);
+		g = shortHex(g);
+		b = shortHex(b);
+		a = shortHex(a);
+		if(a !== 'f') {
+			return "#" + r + g + b + a;
+		}
+		return "#" + r + g + b;
+	}
+		
+	function readPixel(x, y) {
+		var p = context.getImageData(x, y, 1, 1).data;
+		var longValue = rgbaToHex(p[0], p[1], p[2], p[3]);
+		var shortValue = rgbaToHexShort(p[0], p[1], p[2], p[3]);
+		var expanded = expandedHex(shortValue);
+		var useshort = document.querySelector('#shortcolors');
+		if(useshort.checked || expanded == longValue) {
+			return shortValue;
+		}
+		return longValue;
+	}
+
+	function round_number(num, dec) {
+		return Math.round(num * Math.pow(10, dec)) / Math.pow(10, dec);
+	}
+	
+	function prepareCode() {
+		var size = parseFloat(document.querySelector('#pixelsize').value);
+		var width = parseFloat(document.querySelector('#width').value)
+		var tweak = parseInt(document.querySelector('#tweak').value);
+		var decimals = parseInt(document.querySelector('#decimals').value);
+		var spacing = round_number(size / 100, decimals);
+		size = round_number(size / 100 * (100 + tweak), decimals); 
+		output += '<width=' + width + '><font="Arial SDF"><size=' + size +'><mspace='+spacing+'><line-height='+spacing+'>';
+	}
+	
+	function addColor(hex) {
+		output += '<' + hex.toUpperCase() + '>';
+	}
+	
+	function addPeriod() {
+		output += '.';
+	}
+	
+	function closeLine() {
+		output += '\r\n';
+	}
+	
+	function imageToMatrix(w, h) {
+	    output = '';
+		prepareCode();
+		var matrix = new Array(h);
+		for(var y = 0; y < h; ++y) {
+			matrix[y] = new Array(w);
+			for(var x = 0; x < w; ++x) {
+				matrix[y][x] = readPixel(x, y);
+				if(x > 0 && matrix[y][x] == matrix[y][x-1]
+						|| x == 0 && y > 0 && matrix[y][x] == matrix[y-1][x]) {
+					// no op
+				} else {
+					addColor(matrix[y][x]);
+				}
+				addPeriod();
+			}
+			closeLine();
+		}
+		textarea.value = output;
+		return output.length;
+	}
+
+	function convertImage() {
+		textarea.style.display = 'none';
+		charcount.innerHTML = '';
+		preview.src = '';
+		var file = document.querySelector('#imagefile').files[0];
+		if (file) {
+			reader.readAsDataURL(file);
+		} else {
+			charcount.innerHTML = '<span style="color: red; font-weight: bolder">Invalid input image</span>';
+		}
+	}	
+</script>
+<button onclick="convertImage()">Execute</button>
+<hr>
+<p><small>Changelog<ul><li>V2.1: converted line endings from "\n" to "\r\n"<li>V2: uses alternate font and periods to draw fully opaque pixels, added options to tweak the tag values, added autosize feature, added short hex values feature<li>V1: first version using &lt;mark&gt; technique</ul></small></p>
 </body>
 </html>
