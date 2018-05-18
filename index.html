@@ -1,0 +1,118 @@
+<!doctype html>
+<html>
+<head>
+	<title>CreatiSign Generator V1</title>
+	<meta charset="utf-8" />
+	<script>
+	function rgbToHex(r, g, b) {
+		if (r > 255 || g > 255 || b > 255)
+			throw "Invalid color component";
+		return ((r << 16) | (g << 8) | b).toString(16);
+	}
+		
+	function previewFile() {
+	
+		var preview = document.querySelector('img');
+		var canvas = document.querySelector('canvas');
+		var context = canvas.getContext('2d');
+		var textarea = document.querySelector('textarea');
+		var file    = document.querySelector('input[type=file]').files[0];
+		var reader  = new FileReader();
+		var output = '';
+
+		function readPixel(x, y) {
+			var p = context.getImageData(x, y, 1, 1).data;
+			var hex = "#" + ("000000" + rgbToHex(p[0], p[1], p[2])).slice(-6);
+			return hex;
+		}
+
+		reader.addEventListener("load", function () {
+			preview.src = reader.result;
+		}, false);
+
+		if (file) {
+			reader.readAsDataURL(file);
+		}
+		
+		preview.onload = function() {
+			var w = canvas.width = preview.width;
+			var h = canvas.height = preview.height;
+			context.drawImage(preview, 0, 0, preview.width, preview.height);
+			imageToMatrix(w, h);
+		}
+		
+		function prepareMark() {
+			output += '<size=0.4><mspace=4.5em><line-height=94%><#00000000>';
+		}
+		
+		function addMark(hex) {
+			output += '<mark=' + hex.toUpperCase() + '>';
+		}
+		
+		function addCounter(counter) {
+			output += counter;
+		}
+		
+		function closeLine() {
+			output += '\n';
+		}
+		
+		function closeMark() {
+			output += '<#000000FF>';
+		}
+		
+		function imageToMatrix(w, h) {
+			prepareMark();
+			var matrix = new Array(h);
+			var counter = 0;
+			for(var y = 0; y < h; ++y) {
+				matrix[y] = new Array(w);
+				for(var x = 0; x < w; ++x) {
+					matrix[y][x] = readPixel(x, y);
+					if(x > 0 && matrix[y][x] == matrix[y][x-1]
+							|| x == 0 && y > 0 && matrix[y][x] == matrix[y-1][x]) {
+						++counter;
+						if(counter > 9) {
+							counter = 0;
+						}
+					} else {
+						counter = 0;
+						addMark(matrix[y][x]);
+					}
+					addCounter(counter);
+				}
+				closeLine();
+			}
+			closeMark();
+			textarea.innerHTML = output;
+			var charcount = document.querySelector("#charcount");
+			charcount.innerHTML = "char count: " + output.length;
+		}
+	}
+	</script>
+	<style>
+	canvas {
+	  image-rendering: optimizeSpeed; 
+	  image-rendering: -moz-crisp-edges; 
+	  image-rendering: -webkit-optimize-contrast;
+	  image-rendering: -o-crisp-edges; 
+	  image-rendering: pixelated;    
+	  -ms-interpolation-mode: nearest-neighbor;
+	}
+	textarea {
+		width: 100%;
+		height: 20em;
+	}
+	</style>
+</head>
+<body>
+<h1>CreatiSign</h1>
+<p><a href="http://entuland.com/creatisign">Latest live version</a> - <a href="https://github.com/entuland/creatisprites" target="_blank">All versions on GitHub</a></p>
+Select the image you want to convert to CreatiSign code (or drag it onto the file selector) - all of the work will be done by your browser and there isn't so much room in Arc Signs, so use a very small image (32x32 max). Even in that case, if the image has many color variations, you may end up hitting the Arc Sign character limit. The image will NOT be sent to any server. You can save this page on your desktop and use it offline too, if you're concerned about that :)<hr>
+<input type="file" onchange="previewFile()"><hr>
+<img src="" style="display: none"><canvas></canvas><hr>
+Once you see text appearing down here in the textarea, select all of it, copy it and paste it in your Arc Sign, then tweak it as you please. A character count will also appear down here when the work is done.<hr>
+<textarea></textarea>
+<p id="charcount"></p>
+</body>
+</html>
