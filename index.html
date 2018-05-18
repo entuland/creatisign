@@ -1,7 +1,7 @@
 <!doctype html>
 <html>
 <head>
-	<title>CreatiSign Generator V2.2</title>
+	<title>CreatiSign Generator V2.3</title>
 	<meta charset="utf-8" />
 	<style>
 	body {
@@ -27,10 +27,13 @@
 	input[type=file] {
 		background-color: yellow;
 	}
+	#input {
+		max-width: 400px;
+	}
 	</style>
 </head>
 <body>
-<h1>CreatiSign Generator - V2.2</h1>
+<h1>CreatiSign Generator - V2.3</h1>
 <p><a href="http://entuland.com/creatisign">Latest live version</a> - <a href="https://github.com/entuland/creatisprites" target="_blank">All versions on GitHub</a></p>
 <p>Select the image you want to convert to CreatiSign code (or drag it onto the file selector), then alter the settings as you please and click "Execute" at the bottom of this page.</p>
 <p>The image will NOT be sent to any server. You can save this page on your desktop and use it offline too, if you're concerned about that :)</p>
@@ -49,15 +52,20 @@
 	</tbody>
 </table>
 <hr>
-<img src="" style="display: none"><canvas></canvas><hr>
+<img src="" id="input">
+<canvas id="working"></canvas>
+<canvas id="preview"></canvas>
+<hr>
 <textarea onfocus="this.select()"></textarea>
 <p id="charcount"></p>
 <script>	
-	var preview = document.querySelector('img');
-	var canvas = document.querySelector('canvas');
-	canvas.height = 0;
-	canvas.width = 0;
-	var context = canvas.getContext('2d');
+	var input = document.querySelector('#input');
+	var working = document.querySelector('#working');
+	var output = document.querySelector('#preview');
+	working.height = 0;
+	working.width = 0;
+	var workingctx = working.getContext('2d');
+	workingctx.imageSmoothingEnabled = false;
 	var textarea = document.querySelector('textarea');
 	var autosize = document.querySelector('#autosize');
 	var charcount = document.querySelector("#charcount");
@@ -70,7 +78,7 @@
 	var output = '';
 
 	reader.addEventListener("load", function () {
-		preview.src = reader.result;
+		input.src = reader.result;
 	}, false);
 
 	function notice(w, h) {
@@ -79,15 +87,15 @@
 		}, 1);
 	}
 	
-	preview.onload = function() {
+	input.onload = function() {
 		var numchars = 0;
-		var w = preview.width;
-		var h = preview.height;
+		var w = input.width;
+		var h = input.height;
 		var ratio = 1.0 * h / w;
 		if(!autosize.checked) {
 			numchars = attempt(w, h);
 		} else {
-			for(w = 0; w < preview.width; w += 10) {
+			for(w = 0;; w += 10) {
 				h = Math.round(w * ratio);
 				numchars = attempt(w, h);
 				if(numchars > limit) {
@@ -113,10 +121,10 @@
 
 	function attempt(w, h) {
 		notice(w, h);
-		canvas.width = w;
-		canvas.height = h;
-		context.clearRect(0, 0, w, h);
-		context.drawImage(preview, 0, 0, w, h);
+		working.width = w;
+		working.height = h;
+		workingctx.clearRect(0, 0, w, h);
+		workingctx.drawImage(input, 0, 0, w, h);
 		return imageToMatrix(w, h);
 	}
 	
@@ -138,16 +146,21 @@
 	}
 	
 	function rgbaToHex(r, g, b, a) {
+		r = Math.round(r);
+		g = Math.round(g);
+		b = Math.round(b);
+		a = Math.round(a);
 		if (r > 255 || g > 255 || b > 255 || a > 255) {
 			throw 'Invalid color component';
 		}
-		var result = '';		
+		var result = '#';		
+		result += r.toString(16).padStart(2, "0");
+		result += g.toString(16).padStart(2, "0");
+		result += b.toString(16).padStart(2, "0");
 		if(a < 255) {
-			result = (r << 32) | (g << 16) | (b << 8) | a;		
-			return '#' + ('00000000' + result.toString(16)).slice(-8);
+			result += a.toString(16).padStart(2, "0");
 		}
-		result = (r << 16) | (g << 8) | b;
-		return '#' + ('000000' + result.toString(16)).slice(-6);
+		return result;
 	}
 
 	function rgbaToHexShort(r, g, b, a) {
@@ -167,7 +180,7 @@
 		
 	function readPixel(x, y) {
 		var result = '';
-		var p = context.getImageData(x, y, 1, 1).data;
+		var p = workingctx.getImageData(x, y, 1, 1).data;
 		
 		var c = {
 			r: p[0],
@@ -175,20 +188,6 @@
 			b: p[2],
 			a: p[3]
 		};
-		
-		if(y == 31 && x == 0) {
-			var longValue = rgbaToHex(c.r, c.g, c.b, c.a);
-			var shortValue = rgbaToHexShort(c.r, c.g, c.b, c.a);
-			var expanded = expandedHex(shortValue);
-			if(useshort || expanded == longValue) {
-				result = shortValue;
-			} else {
-				result = longValue;
-			}
-			console.log("before");
-			console.log(c);
-			console.log(result);
-		}
 
 		if(gammacorrection != 1) {
 			c.r = 255 * Math.pow(( c.r / 255), gammacorrection);
@@ -203,16 +202,10 @@
 		var longValue = rgbaToHex(c.r, c.g, c.b, c.a);
 		var shortValue = rgbaToHexShort(c.r, c.g, c.b, c.a);
 		var expanded = expandedHex(shortValue);
-		if(useshort || expanded == longValue) {
+		if(useshort || (expanded == longValue)) {
 			result = shortValue;
 		} else {
 			result = longValue;
-		}
-
-		if(y == 31 && x == 0) {
-			console.log("after");
-			console.log(c);
-			console.log(result);
 		}
 
 		return result;
@@ -256,8 +249,7 @@
 						(x == 0 && y > 0 && matrix[y][x] === matrix[y-1][w-1])
 						|| (x > 0 && matrix[y][x] === matrix[y][x-1])
 					) {
-					console.log([x, y]);
-					console.log(matrix[y][x]);
+					// no op
 				} else {
 					addColor(matrix[y][x]);
 				}
@@ -272,7 +264,7 @@
 	function convertImage() {
 		textarea.style.display = 'none';
 		charcount.innerHTML = '';
-		preview.src = '';
+		input.src = '';
 		gammacorrection = 1 / parseFloat(document.querySelector("#gamma").value);
 		alphacorrection = 1 / parseFloat(document.querySelector("#alpha").value);
 		useshort = document.querySelector('#shortcolors').checked;
@@ -287,10 +279,13 @@
 <button onclick="convertImage()">Execute</button>
 <hr>
 <p><small>Changelog
-<ul><li>V2.2: added gamma correction, fixed a bug that created artifacts at the border of the image in some cases
-<li>V2.1: converted line endings from "\n" to "\r\n"
-<li>V2: uses alternate font and periods to draw fully opaque pixels, added options to tweak the tag values, added autosize feature, added short hex values feature
-<li>V1: first version using &lt;mark&gt; technique</ul></small></p>
+<ul>
+	<li>V2.3: fixed extremely silly bug in alpha handling
+	<li>V2.2: added gamma correction, fixed a bug that created artifacts at the border of the image in some cases
+	<li>V2.1: converted line endings from "\n" to "\r\n"
+	<li>V2: uses alternate font and periods to draw fully opaque pixels, added options to tweak the tag values, added autosize feature, added short hex values feature
+	<li>V1: first version using &lt;mark&gt; technique
+</ul></small></p>
 <hr>
 </body>
 </html>
