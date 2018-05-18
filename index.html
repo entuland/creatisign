@@ -1,11 +1,13 @@
 <!doctype html>
 <html>
 <head>
-	<title>CreatiSign Generator V2.3</title>
+	<title>CreatiSign Generator V2.4</title>
 	<meta charset="utf-8" />
 	<style>
 	body {
 		font-family: sans-serif;
+		background: #eee;
+		padding-bottom: 50px;
 	}
 	canvas {
 	  image-rendering: optimizeSpeed; 
@@ -16,118 +18,202 @@
 	  -ms-interpolation-mode: nearest-neighbor;
 	}
 	textarea {
-		display: none;
 		width: 100%;
 		height: 20em;
+		background: yellow;
 	}
 	th {
 		text-align: right;
 		padding-right: 1em;
+		position: relative;
+		max-width: 300px;
 	}
 	input[type=file] {
 		background-color: yellow;
+		height: 50px;
 	}
 	#input {
 		max-width: 400px;
 	}
+	#imagefile {
+		width: 100%;
+	}
+	input, select {
+		font-size: 120%;
+		font-weight: bolder;
+		text-align: center;
+		width: 200px;
+	}
+	input[type=checkbox] {
+		width: auto;
+	}
+	td, th {
+		padding: 5px;
+	}
+	#char {
+		font-size: 300%;
+	}
+	h3 {
+		border-top: 1px solid #666;
+		margin-top: 20px;
+		padding-top: 10px;
+	}
+	h4 {
+		text-align: center;
+	}
+	#execute {
+		padding: 10px;
+		position: fixed;
+		left: 0;
+		bottom: 0;
+		background: #0E0;
+		border: 2px solid #050;
+	}
+	small.hint {
+		display: inline-block;
+		width: 1.5em;
+		height: 1.5em;
+		margin: 3px;
+		margin-left: 10px;
+		padding: 0;
+		overflow: hidden;
+		background: blue;
+		color: white;
+		position: absolute;
+		border-radius: 1em;
+		box-shadow: 2px 2px 2px #666;
+	}
+	small.hint:hover {
+		overflow: auto;
+		position: absolute;
+		width: auto;
+		height: auto;
+		padding: 1em;
+		max-width: 300px;
+		z-index: 2;
+	}
+	small.hint:before {
+		display: inline-block;
+		text-align: center;
+		width: 1.5em;
+		height: 1.5em;
+		content: "i";
+		font-size: 200%;
+		padding: 3px;
+	}
+	small.hint:hover:before {
+		display: none;
+	}
+	label {
+		cursor: pointer;
+	}
+	#settings, #results {
+		width: 49%;
+		display: inline-block;
+		vertical-align: top;
+		padding: 0;
+		margin: 0;
+	}
+	#results {
+		background: #AFA;
+	}
+	.recipe {
+		width: 30%;
+		float: left;
+		margin: 10px;
+		padding: 10px;
+	}
 	</style>
 </head>
 <body>
-<h1>CreatiSign Generator - V2.3</h1>
+<h1>CreatiSign Generator - V2.4</h1>
 <p><a href="http://entuland.com/creatisign">Latest live version</a> - <a href="https://github.com/entuland/creatisprites" target="_blank">All versions on GitHub</a></p>
-<p>Select the image you want to convert to CreatiSign code (or drag it onto the file selector), then alter the settings as you please and click "Execute" at the bottom of this page.</p>
+<p>This is a tool that lets you convert images into codes that you can put into Arc Signs in the game <a href="http://store.steampowered.com/app/280790" target="_blank">Creativerse</a>, free to play on Steam</p>
+<p>Select the image you want to convert to CreatiSign code (or drag it onto the file selector), then alter the settings as you please and click the green "Execute" button at the bottom-left corner of this page.</p>
 <p>The image will NOT be sent to any server. You can save this page on your desktop and use it offline too, if you're concerned about that :)</p>
 <p>Only tested in Chrome, may work in other browsers.</p>
-<table>
+<p><a href="http://steamcommunity.com/app/280790/discussions/3/1479857071263583178/" target="_blank">Creatisign Generator discussion on Steam Community Forums</a></p>
+<table id="settings">
 	<tbody>
-		<tr><th>Input image:</th><td><input type="file" id="imagefile"> &#8592; select or drag the image here</td></tr>
-		<tr><th>&lt;width&gt; tag:</th><td><input type="number" id="width" min="0" step="0.1" value="8"> <small>this affects the amount of horizontal blocks the code will be allowed to grow, safe to keep this large-ish</small></td></tr>
-		<tr><th>Pixel size:</th><td><input type="number" id="pixelsize" min="0" step="0.1" value="2"> <small>(a pixel of size 1 is way smaller than one block, just for reference)</small></td></tr>
-		<tr><th>Spacing tweak (percent):</th><td><input type="number" id="tweak" step="1" value="10"> <small>values lower than 10 start to show the spacing grid between pixels, negative values allowed</small></td></tr>
-		<tr><th>Max decimals after tweaking:</th><td><input type="number" id="decimals" min="0" step="1" value="2"> <small>rounding for the three dependant tags (&lt;size&gt;, &lt;mspace&gt; and &lt;line-height&gt;)</small></td></tr>
-		<tr><th>RGB Gamma correction</th><td><input type="number" id="gamma" min="0.01" step="0.01" value="0.5" max="7.99"> <small>range 0.01 ~ 7.99, preset to 0.5 to work around the current deviance of RGB shades, set this to 1 to disable gamma correction altogether</small></td></tr>
-		<tr><th>Alpha correction</th><td><input type="number" id="alpha" min="0.01" step="0.01" value="1" max="7.99"> <small>range 0.01 ~ 7.99, preset to 1 (disabled) to let you use it only if necessary</small></td></tr>
-		<tr><th></th><td><label><input type="checkbox" id="shortcolors"> Always use short color codes</label> - <small>helps reducing the code size, but can alter the colors of your image</small></td></tr>
-		<tr><th></th><td><label><input type="checkbox" id="autosize" checked> Automatically compute largest possible resolution</label> - <small>necessary for large images but may blur pixel art; if you leave this off and try to convert large images your browser will likely hang or crash, you've been warned!</small></td></tr>
+		<tr><th>Input image:</th><td><input type="file" id="imagefile"><br>select or drag the image here above</td></tr>
+				
+		<tr><th>&lt;zoffset&gt; tag:</th><td><input type="number" id="zoffset" step="0.01" value="0.51"><small class="hint">measured in blocks, defaults to zero in the game when omitted and results in the graphic placed in the middle of a block space; set it to zero to omit it from the code; defaults to 0.51 here to bring it slightly in front of a wall if you place the Arc Sign <em>under</em> that wall</small></td></tr>
+		
+		<tr><th>&lt;offset&gt; tag:</th><td><input type="number" id="offset" step="0.01" value="0"><small class="hint">measured in blocks, defaults to about 0.55 in the game when omitted; set it to zero to omit it from the code</small></td></tr>
+		
+		<tr><th>&lt;width&gt; tag:</th><td><input type="number" id="width" min="0" step="0.01" value="8" max="8"><small class="hint">range 0 ~ 8, amount of horizontal blocks the sign is allowed to grow before wrapping; set it to zero to omit it from the code</small></td></tr>
+		
+		<tr><th>&lt;size&gt; tag:</th><td><input type="number" id="pixelsize" min="0" step="0.01" value="2"><small class="hint">using the "Arial SDF" font a period of size 1 is about 1/100th of a block</small></td></tr>
+		
+		<tr><th>Main spacing tweak <small>(%)</small>:</th><td><input type="number" id="tweak" step="0.1" value="-10"><small class="hint">values higher than -10 start to show the spacing grid between pixels, the higher the value, the larger the horizontal spacing</small></td></tr>
+		
+		<tr><th>Vertical spacing tweak<br><small>(% of main spacing tweak)</small>:</th><td><input type="number" id="vtweak" min="0" step="0.1" value="100"><small class="hint">100 gives equal spacing in both directions, 200 doubles the vertical spacing, 50 halves it and so forth</small></td></tr>
+		
+		<tr><th>Max decimals after tweaking:</th><td><input type="number" id="decimals" min="0" step="1" value="3"> <small class="hint">rounding for the the various numeric tags</small></td></tr>
+		
+		<tr><th>RGB Gamma correction</th><td><input type="number" id="gamma" min="0.01" step="0.01" value="0.5" max="7.99"> <small class="hint">range 0.01 ~ 7.99, preset to 0.5 to work around the current deviation of RGB shades, set this to 1 to disable gamma correction altogether</small></td></tr>
+		
+		<tr><th>Alpha correction</th><td><input type="number" id="alpha" min="0.01" step="0.01" value="1" max="7.99"><small class="hint">range 0.01 ~ 7.99, preset to 1 (disabled) to let you use it only if necessary</small></td></tr>
+		
+		<tr><th></th><td><label><input type="checkbox" id="shortcolors"> Always use short color codes</label><small class="hint">helps reducing the code size, but can alter the colors of your image; short color codes will be used anyways if they match the long codes</small></td></tr>
+		
+		<tr><th></th><td><label><input type="checkbox" id="autosize" checked> Automatically compute largest possible resolution</label><small class="hint">necessary for large images but may blur pixel art; if you leave this off and try to convert large images your browser will likely hang or crash, you've been warned!</small></td></tr>
+		
+		<tr><th></th><td><label><input type="checkbox" id="grayscale"> Convert to grayscale</label><small class="hint">really need a hint on this?</small></td></tr>
+
+		<tr><th>Number of slices</th><td><input type="number" id="slices" step="1" value="1" min="1"> <small class="hint">number of horizontal slices / arc signs for splitting the image and get better resolutions; this will force an &lt;offset&gt; tag of 0.55 (if you set <em>that</em> tag to zero)</small></td></tr>
+		
+		<tr><th>Character to repeat</th><td><input type="text" id="char" value="."> <small class="hint">character(s) to use to draw pixels, defaults to the period</small></td></tr>
+		<tr><th>Font</th><td>
+			<select id="font">
+				<option>Arial SDF</option>
+				<option>default</option>
+				<option>LiberationSans SDF</option>
+				<option>SourceHanSerifSC-Bold SDF</option>
+				<option>SourceHanSerifSC-Regular SDF</option>
+			</select>
+		</td></tr>
+
+		<tr><th>Character count limit</th><td><input type="number" id="limit" step="1" value="10000" min="1"> <small class="hint">10K chars is the current Arc Sign textbox limit, this number will only be used by the auto computation of the largest resolution, you can lower it slightly (say, to 9900 or so) to ensure yourself some free space for tweaking the results in the game without risking to trim pixels off the bottom of your images</small></td></tr>
 	</tbody>
 </table>
-<hr>
-<img src="" id="input">
-<canvas id="working"></canvas>
-<canvas id="preview"></canvas>
-<hr>
-<textarea onfocus="this.select()"></textarea>
-<p id="charcount"></p>
-<script>	
+<div id="results">
+	<h4>Output</h4>
+	<figure>
+		<figcaption>Original image</figcaption>
+		<img src="" id="input">
+	</figure>
+	<figure>
+		<figcaption>Preview of the result</figcaption>
+		<canvas id="working"></canvas>
+	</figure>
+	<div id="textareas"></div>
+</div>
+<script>
+
+	// ========================================================================
+	// GLOBAL VARIABLES AND INITIAL SETUP
+	// hey, I know it's bad custom to use global stuff, I'll tidy all of this up sometime! :P
+	// ========================================================================
+
 	var input = document.querySelector('#input');
 	var working = document.querySelector('#working');
-	var output = document.querySelector('#preview');
-	working.height = 0;
-	working.width = 0;
 	var workingctx = working.getContext('2d');
 	workingctx.imageSmoothingEnabled = false;
-	var textarea = document.querySelector('textarea');
 	var autosize = document.querySelector('#autosize');
-	var charcount = document.querySelector("#charcount");
+	var textareas = document.querySelector('#textareas');
+	var grayscale = document.querySelector('#grayscale');
+	var pixel = document.querySelector('#char');
 	var useshort = false;
+	var slicecount = document.querySelector('#slices');
 	var gammacorrection = 1;
 	var alphacorrection = 1;
-	var limit = 10000;
-
-	var reader  = new FileReader();
-	var output = '';
-
-	reader.addEventListener("load", function () {
-		input.src = reader.result;
-	}, false);
-
-	function notice(w, h) {
-		setTimeout(function() {
-			charcount.innerHTML += "Attempting size (" + w + ", " + h + ")<br>";
-		}, 1);
-	}
+	var globaloutput = '';
 	
-	input.onload = function() {
-		var numchars = 0;
-		var w = input.width;
-		var h = input.height;
-		var ratio = 1.0 * h / w;
-		if(!autosize.checked) {
-			numchars = attempt(w, h);
-		} else {
-			for(w = 0;; w += 10) {
-				h = Math.round(w * ratio);
-				numchars = attempt(w, h);
-				if(numchars > limit) {
-					var maxw = w - 10;
-					for(; w >= maxw; --w) {
-						h = Math.round(w * ratio);
-						numchars = attempt(w, h);
-						if(numchars <= limit) {
-							break;
-						}
-					}
-					break;
-				}
-			}
-		}
-		textarea.style.display = 'block';
-		setTimeout(function() {
-			charcount.innerHTML = 'Done! Text length: ' + numchars + ' (' + w + ', ' + h + ')';
-		}, 1);
-		return;
+	// ========================================================================
+	// COLOR CONVERSION HELPERS
+	// ========================================================================
 
-	}
-
-	function attempt(w, h) {
-		notice(w, h);
-		working.width = w;
-		working.height = h;
-		workingctx.clearRect(0, 0, w, h);
-		workingctx.drawImage(input, 0, 0, w, h);
-		return imageToMatrix(w, h);
-	}
-	
 	function shortHex(hex) {
 		if(hex % 17 > 7) {
 			hex = 17 + hex - hex % 17;
@@ -146,6 +232,7 @@
 	}
 	
 	function rgbaToHex(r, g, b, a) {
+		// for some reason weird numbers are arriving here, rounding them to play safe for the time being
 		r = Math.round(r);
 		g = Math.round(g);
 		b = Math.round(b);
@@ -188,6 +275,10 @@
 			b: p[2],
 			a: p[3]
 		};
+		
+		if(grayscale.checked) {
+			c.r = c.g = c.b = 0.2126 * c.r + 0.7152 * c.g + 0.0722 * c.b;
+		}
 
 		if(gammacorrection != 1) {
 			c.r = 255 * Math.pow(( c.r / 255), gammacorrection);
@@ -215,77 +306,295 @@
 		return Math.round(num * Math.pow(10, dec)) / Math.pow(10, dec);
 	}
 	
-	function prepareCode() {
+	// ========================================================================
+	// CREATISIGN CODE HELPERS
+	// ========================================================================
+
+	function prepareCode(w, h, slice, slices, sliceh) {
 		var size = parseFloat(document.querySelector('#pixelsize').value);
-		var width = parseFloat(document.querySelector('#width').value)
+		var width = parseFloat(document.querySelector('#width').value);
+		var offset = parseFloat(document.querySelector('#offset').value);
+		var zoffset = parseFloat(document.querySelector('#zoffset').value);
 		var tweak = parseInt(document.querySelector('#tweak').value);
+		var vtweak = parseInt(document.querySelector('#vtweak').value);
 		var decimals = parseInt(document.querySelector('#decimals').value);
-		var spacing = round_number(size / 100, decimals);
-		size = round_number(size / 100 * (100 + tweak), decimals); 
-		output += '<width=' + width + '><font="Arial SDF"><size=' + size +'><mspace='+spacing+'><line-height='+spacing+'>';
+		var font = document.querySelector('#font').value;
+		var spacing = round_number(size / 10000 * (100 + tweak), decimals);
+		var vspacing = round_number(spacing / 100 * vtweak, decimals);
+		
+		if(slices > 1 && offset == 0) {
+			offset = 0.55;
+		}
+		
+		if(slices > 1 && slice > 1) {
+			offset -= (slice - 1) * sliceh * vspacing;
+			zoffset += slice - 1;
+		}
+		
+		if(offset) {
+			globaloutput += '<offset=' + round_number(offset, decimals) + '>';
+		}
+		if(zoffset) {
+			globaloutput += '<zoffset=' + round_number(zoffset, decimals) + '>';
+		}
+		if(width) {
+			globaloutput += '<width=' + round_number(width, decimals) + '>';
+		}
+		globaloutput += '<font="' + font + '"><size=' + size +'><mspace=' + spacing + '><line-height=' + vspacing + '>';
 	}
 	
 	function addColor(hex) {
-		output += '<' + hex.toUpperCase() + '>';
+		globaloutput += '<' + hex.toUpperCase() + '>';
 	}
 	
 	function addPeriod() {
-		output += '.';
+		globaloutput += char.value;
 	}
 	
 	function closeLine() {
-		output += '\r\n';
+		globaloutput += '\r\n';
+	}
+
+	function generateAutoOutput(w, h, slice, slices) {
+		var limit = parseInt(document.querySelector('#limit').value);
+		var ratio = 1.0 * h / w;
+		for(w = 0;; w += 10) {
+			h = Math.round(w * ratio);
+			output = generateOutput(w, h, slice, slices);
+			if(output.length > limit) {
+				var maxw = w - 10;
+				for(; w >= maxw; --w) {
+					h = Math.round(w * ratio);
+					output = generateOutput(w, h, slice, slices);
+					if(output.length <= limit) {
+						break;
+					}
+				}
+				break;
+			}
+		}
+		return {
+			output: output,
+			w: w,
+			h: h
+		};
 	}
 	
-	function imageToMatrix(w, h) {
-	    output = '';
-		prepareCode();
+	function generateOutput(w, h, slice, slices) {
+	    globaloutput = '';
+		if(slice == 1) {
+			prepareCanvas(w, h);
+		}
+		
+		var sliceh = Math.floor(h / slices);
+		prepareCode(w, h, slice, slices, sliceh);
+		
 		var matrix = new Array(h);
-		for(var y = 0; y < h; ++y) {
+		var starty = (slice-1) * sliceh;
+		var stopy = Math.min(slice * sliceh, h);
+		for(var y = starty; y < stopy; ++y) {
 			matrix[y] = new Array(w);
 			for(var x = 0; x < w; ++x) {
 				matrix[y][x] = readPixel(x, y);
-				if(
-						(x == 0 && y > 0 && matrix[y][x] === matrix[y-1][w-1])
-						|| (x > 0 && matrix[y][x] === matrix[y][x-1])
-					) {
-					// no op
-				} else {
+				if(!(x == 0 && y > starty && matrix[y][x] === matrix[y-1][w-1]) && !(x > 0 && matrix[y][x] === matrix[y][x-1])) {
+					// only set the color if it differs from the previous one
 					addColor(matrix[y][x]);
 				}
 				addPeriod();
 			}
 			closeLine();
 		}
-		textarea.value = output;
-		return output.length;
+		return globaloutput.replace(/\r\n$/, "");
+	}
+	
+	function prepareCanvas(w, h) {
+		working.width = w;
+		working.height = h;
+		workingctx.clearRect(0, 0, w, h);
+		workingctx.drawImage(input, 0, 0, w, h);		
 	}
 
-	function convertImage() {
-		textarea.style.display = 'none';
-		charcount.innerHTML = '';
+	// ========================================================================
+	// MAIN FUNCTIONS
+	// ========================================================================
+	
+	function execute() {
+		// triggered by clicking on "Execute" button
 		input.src = '';
+		textareas.innerText = '';
 		gammacorrection = 1 / parseFloat(document.querySelector("#gamma").value);
 		alphacorrection = 1 / parseFloat(document.querySelector("#alpha").value);
 		useshort = document.querySelector('#shortcolors').checked;
 		var file = document.querySelector('#imagefile').files[0];
 		if (file) {
+			// indirectly triggers processImage()
 			reader.readAsDataURL(file);
 		} else {
-			charcount.innerHTML = '<span style="color: red; font-weight: bolder">Invalid input image</span>';
+			alert("Invalid input image");
 		}
-	}	
+	}
+	
+	function processImage() {
+		var slices = parseInt(slicecount.value);
+		if(slices < 1) {
+			alert('Invalid slices count');
+			return;
+		}
+		if(slices == 1) {
+			processSingleSlice();
+			return;
+		}
+		processMultipleSlices(slices);
+	}
+	
+	function processSingleSlice() {
+		var w = input.width;
+		var h = input.height;
+		var output = '';
+		if(autosize.checked) {
+			var auto = generateAutoOutput(w, h, 1, 1);
+			output = auto.output;
+			w = auto.w;
+			h = auto.h;
+		} else {
+			output = generateOutput(w, h, 1, 1);
+		}
+		displayResult(output, w, h, 1);
+	}
+	
+	function processMultipleSlices(slices) {
+		var w = input.width;
+		var h = input.height;
+		var output = '';
+		var limit = parseInt(document.querySelector('#limit').value);
+		var minw = limit;
+		var ratio = 1.0 * h / w;
+
+		if(autosize.checked) {
+			for(var s = 1; s <= slices; ++s) {
+				var auto = generateAutoOutput(w, h, s, slices);
+				minw = Math.min(auto.w, minw);
+			}
+			w = minw;
+			h = Math.round(w * ratio);
+		}
+		for(var s = 1; s <= slices; ++s) {
+			output = generateOutput(w, h, s, slices);
+			displayResult(output, w, h, s);
+		}		
+	}
+	
+	function displayResult(output, w, h, delta) {
+		var container = document.createElement('div');
+		textareas.appendChild(container);
+		container.innerHTML = '<hr><strong>Arc Sign #' + delta + '</strong>, ';
+		container.innerHTML += '' + output.length + ' chars, sizes (' + w + ', ' + h + ')';
+		if(delta > 1) {
+			container.innerHTML += '<br>place this one block behind Arc Sign # ' + (delta - 1);
+		}
+		
+		var textarea = document.createElement('textarea');
+		container.appendChild(textarea);
+		textarea.value = output;
+		textarea.onfocus = function() {
+			this.select();
+		};
+	}
+	
+	var reader  = new FileReader();
+
+	reader.addEventListener("load", function () {
+		// triggers input.onload()
+		input.src = reader.result;
+	}, false);
+	
+	input.onload = processImage;
+
 </script>
-<button onclick="convertImage()">Execute</button>
+<button id="execute" onclick="execute()">Execute</button>
 <hr>
-<p><small>Changelog
-<ul>
-	<li>V2.3: fixed extremely silly bug in alpha handling
-	<li>V2.2: added gamma correction, fixed a bug that created artifacts at the border of the image in some cases
-	<li>V2.1: converted line endings from "\n" to "\r\n"
-	<li>V2: uses alternate font and periods to draw fully opaque pixels, added options to tweak the tag values, added autosize feature, added short hex values feature
-	<li>V1: first version using &lt;mark&gt; technique
-</ul></small></p>
-<hr>
+<h2>Useful patterns</h2>
+<p>The results will vary in color and sizes / ratio depending on the image you feed to the generator, the following numbers have been found by trial and error using the "Arial SDF" font; since you can use more than one character to be repeated, in certain patterns you can simply add spaces to increase the horizontal spacing.</p>
+
+<div class="recipe">
+	<h3>Simple grid</h3>
+	<img src="simplegrid.jpg">
+	<ul>
+		<li>Set the character to repeat to "+" (plus sign)
+		<li>Set the main spacing tweak around 360
+		<li>Set the vertical spacing tweak to 100
+	</ul>
+</div>
+
+<div class="recipe">
+	<h3>Vertical bars</h3>
+	<img src="verticalbars.jpg">
+	<ul>
+		<li>Set the character to repeat to "|" (pipe sign)
+		<li>Set the main spacing tweak in the range from 900 (farther bars) down to zero (closer bars)
+		<li>Tweak the vertical spacing as you please from 10 (shorter) to 100 (taller) to change the overall height of the pattern
+	</ul>
+</div>
+
+<div class="recipe">
+	<h3>Horizontal bars</h3>
+	<img src="horizontalbars.jpg">
+	<ul>
+		<li>Set the character to repeat to "-" (minus sign) or "=" (equal sign, for paired bars)
+		<li>Set the main spacing tweak in the range from 160 (larger pattern) down to zero (narrower pattern)
+		<li>Tweak the vertical spacing as you please from around 50 (closer bars) to 100 and over (farther and farther bars)
+	</ul>
+</div>
+
+<div class="recipe">
+	<h3>Interlocked grid</h3>
+	<img src="interlockedgrid.jpg">
+	<ul>
+		<li>Set the character to repeat to "#" (hash sign)
+		<li>Set the main spacing tweak to 430
+		<li>Set the vertical spacing tweak to 100
+	</ul>
+</div>
+
+<div class="recipe">
+	<h3>Chains / door curtain</h3>
+	<img src="doorcurtain.jpg">
+	<ul>
+		<li>Set the character to repeat to "§" (section mark)
+		<li>Set the main spacing tweak to 480
+		<li>Set the vertical spacing tweak to 110
+</ul>
+</div>
+
+<div class="recipe">
+	<h3>Industrial grid / fencing net</h3>
+	<img src="fencingnet.jpg">
+	<ul>
+		<li>Set the characters to repeat to "&lt;&gt;" (less than mark &amp; greater than mark)
+		<li>Set the main spacing tweak to 350
+		<li>Set the vertical spacing tweak to 100
+	</ul>
+</div>
+
+<div class="recipe">
+	<p><small>Changelog
+	<ul>
+		<li>V2.4:<ul>
+			<li>added slicing feature
+			<li>added grayscale convertion option
+			<li>added offset and zoffset controls
+			<li>added font &amp; character controls
+			<li>added some recipes to create simple patterns
+			<li>major change in spacing tweak: its sign has been reversed and now the &lt;size&gt; value remains untouched, it's the &lt;mspace&gt; and &lt;line-height&gt values that change depending on the tweak
+			<li>restyled the page a bit and tidied up code a little
+		</ul>
+		<li>V2.3: fixed extremely silly bug in alpha handling
+		<li>V2.2: added gamma correction, fixed a bug that created artifacts at the border of the image in some cases
+		<li>V2.1: converted line endings from "\n" to "\r\n"
+		<li>V2: uses alternate font and periods to draw fully opaque pixels, added options to tweak the tag values, added autosize feature, added short hex values feature
+		<li>V1: first version using &lt;mark&gt; technique
+	</ul></small></p>
+</div>
+
 </body>
 </html>
