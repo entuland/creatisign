@@ -211,7 +211,32 @@ var placer = {
 			var sign = placer.signs[i];
 			sign.move(on[i].x, on[i].y);
 		}
+		placer.storePositions();
 		placer.consistencyCheck.working = false;
+	},
+	
+	storePositions: function() {
+		var positions = [];
+		for(var i = 0; i < placer.signs.length; ++i) {
+			var sign = placer.signs[i];
+			positions[i] = [sign.rx, sign.ry];
+		}
+		window.localStorage.setItem('signs', JSON.stringify(positions));
+	},
+	
+	loadPositions: function() {
+		try {
+			var positions = JSON.parse(window.localStorage.getItem('signs', '[]'));
+			for(var i = 0; i < placer.signs.length; ++i) {
+				if(i >= positions.length) {
+					break;
+				}
+				var sign = placer.signs[i];
+				sign.moveRelative(positions[i][0], positions[i][1]);
+			}
+		} catch (e) {
+			// no-op
+		}
 	},
 	
 	mousemove: function(e) {
@@ -323,6 +348,8 @@ var placer = {
 			case 'gridBottom':
 				placer.grid('bottom');
 				break;
+			default:
+				placer.loadPositions();
 		}
 		placer.consistencyCheck();
 	},

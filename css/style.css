@@ -51,7 +51,7 @@ textarea {
 }
 
 #output img, canvas {
-	background: url(../img/alphagrid.png) top left repeat;
+	background: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAwAAAAMCAYAAABWdVznAAAAH0lEQVQokWNYtGjRf2w4ISEBK2YYkRpwSeAyaERqAABq/mkwVExPHAAAAABJRU5ErkJggg==') top left repeat;
 }
 
 .settingsContainer > small {
@@ -182,71 +182,4 @@ label input, label select {
 .notices {
 	color: #600;
 	font-weight: bolder;
-}
-
-.sign {
-	display: inline-block;
-	width: 2em;
-	height: 2em;
-	margin: 0;
-	box-sizing: border-box;
-	text-align: center;
-	border: 1px solid #990;
-	background: #FF0;
-}
-.greendot {
-	width: 5px;
-	height: 10px;
-	background: #0F0;
-	border: 1px solid black;
-	position: absolute;
-	z-index: 10;
-	margin-left: -2.5px;
-	margin-top: -2.5px;
-	box-shadow: 0 0 10px 5px rgba(255, 0, 255, 0.5);
-	box-sizing: border-box;
-}
-
-.showhover {
-	display: none;
-}
-
-#grid {
-	background: url(../img/grid.png) top left repeat;
-	background-size: 2em;
-	padding-left: 16em;
-	padding-top: 16em;
-}
-
-#placementPreview {
-	min-width: 40em;
-	position: relative;
-}
-
-#placementcontainer {
-	position: fixed;
-	right: 0;
-	bottom: 50px;
-	padding-bottom: 2em;
-	padding-right: 2em;
-	box-sizing: border-box;
-	background: #afa;
-	border: 1px solid #060;
-	opacity: 0.5;
-	transform-origin: bottom right;
-	transform: scale(0.33, 0.33);
-	box-shadow: 0 0 5px 5px #999;
-}
-
-#placementcontainer:hover {
-	opacity: 1;
-	transform: scale(1, 1);
-}
-
-#placementcontainer:hover .showhover {
-	display: block;
-}
-
-#characters {
-	font-size: 300%;
 }

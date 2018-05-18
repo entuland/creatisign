@@ -192,7 +192,7 @@ var inter = {
 				imgCont.classList.add('icon');
 				imgCont.setAttribute('for', id);
 				img = document.createElement('img');
-				img.src = './' + setting.icon;
+				img.src = setting.icon;
 				imgCont.appendChild(img);
 			}
 			

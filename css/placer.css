@@ -1,14 +1,14 @@
 
 #placer {
 	font-family: monospace;
-	background: url(../img/grid.png) top left repeat;
+	background: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeCAYAAAA7MK6iAAAALklEQVRIie3NMQ0AMAzAsPKHEaIdhJ19HCm3p9qLp9q5CAwGg8FgMBgMBoPB3x5weKrI3fg/ZQAAAABJRU5ErkJggg==') top left repeat;
 	background-color: #EEF;
 	position: fixed;
 	user-select: none;
 	border: 1px solid #000;
 	box-sizing: border-box;
-	right: 0;
-	bottom: 50px;
+	right: 20px;
+	bottom: 55px;
 	z-index: 1;
 	transform-origin: bottom right;
 	transform: scale(0.33, 0.33);
@@ -121,7 +121,9 @@
 	top: 50%;
 	transform: translate(-50%, -50%);
 	background-color: #BBF;
-	background-image: url(../img/grid.png), url(../img/blackdot.png), url(../img/blackdot.png);
+	background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeCAYAAAA7MK6iAAAALklEQVRIie3NMQ0AMAzAsPKHEaIdhJ19HCm3p9qLp9q5CAwGg8FgMBgMBoPB3x5weKrI3fg/ZQAAAABJRU5ErkJggg=='), 
+						url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVQImWNgYGD4DwABBAEAfbLI3wAAAABJRU5ErkJggg=='), 
+						url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVQImWNgYGD4DwABBAEAfbLI3wAAAABJRU5ErkJggg==');
 	background-position: -1px -1px, center center, center center;
 	background-repeat: repeat, repeat-y, repeat-x;
 	background-size: 20px, 1px, 1px;

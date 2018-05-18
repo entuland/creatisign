@@ -3,6 +3,16 @@ Proudly made in Sardinia (Italy) by Entuland (entuland@gmail.com)
 
 Changelog:
 
+V3.2:
+	- free placement of arc signs now gets restored properly across page reloads
+	- arc signs get marked in red after the processing only if they actually overflow any limit
+	- the image preview in the placement preview area now gets resized in height properly after execution
+	- replaced all the images with data URIs to ensure the page looks right even when downloaded and run from a local copy
+
+V3.1.BETA:
+	- rebuilt preview placement area completely, allowing for free placement of single arc signs
+	- refactored main slicing algorithm to avoid locking the browser and to show a progress of the actual image processing
+
 V3:
 	- reorganized interface grouping settings in different modes (basic, medium, advanced, insane)
 	- added settings memory (survives page refreshes) and a settings reset button

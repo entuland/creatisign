@@ -16,3 +16,29 @@ function TimeoutLooper(startCallback, continueCallback, stepCallback, doneCallba
 	}
 	
 }
+
+/*
+	
+	var loop = new TimeoutLooper(
+		// start
+		function() {
+
+		},
+		// continue
+		function() {
+
+		},
+		// step
+		function() {
+
+		},
+		// done
+		function() {
+
+		},
+		// delay
+		0
+	);
+	loop.run();
+	
+*/

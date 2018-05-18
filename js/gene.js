@@ -237,9 +237,14 @@ var gene = {
 	},
 	
 	displayResults: function(results) {
-		for(var i in results) {
+		for(var i = 0; i < results.length; ++i) {
 			gene.displayResult(results[i]);
-		}			
+		}
+		var last = results[results.length - 1];
+		console.log(last);
+		var height = last.h * last.intro.vspacing * placer.size;
+		placer.centerimage.style.height = '' + height + 'px';
+		placer.finetuneimage.style.height = '' + (height * 8) + 'px';
 	},
 	
 	displayResult: function(result) {
@@ -301,7 +306,10 @@ var gene = {
 			textarea.classList.add('error');
 			notices.innerHTML += errors.join('<br>');
 			container.appendChild(notices);
-		}		
+			placer.signs[delta].e.classList.add('error');
+		} else {
+			placer.signs[delta].e.classList.remove('error');
+		}
 		
 		container.appendChild(textarea);
 		textarea.value = output;
@@ -324,7 +332,6 @@ var gene = {
 		var limit = parseInt(inter.els.charLimit.value);
 		var y;
 		var offs = {};
-		var side = Math.ceil(Math.sqrt(slices));
 		var curhex = '';
 		var rgba = {};
 		var imagedata = inter.els.resultctx.createImageData(1, 1);
@@ -346,9 +353,9 @@ var gene = {
 				imagedata.data[3] = rgba.a;
 				inter.els.resultctx.putImageData(imagedata, x, y);
 			}
-			offs = gene.prepareCodeOffsets(delta, side, y, intro);
+			offs = gene.prepareCodeOffsets(delta, y, intro);
 			if(output.length + line.length + offs.output.length > limit) {
-				offs = gene.prepareCodeOffsets(delta, side, y - 1, intro);
+				offs = gene.prepareCodeOffsets(delta, y - 1, intro);
 				break;
 			}
 			output += line + '\r\n';
@@ -365,7 +372,6 @@ var gene = {
 			row: offs.row,
 			offset: offs.offset,
 			zoffset: offs.zoffset,
-			side: side,
 			intro: intro,
 		};
 	},
@@ -427,7 +433,7 @@ var gene = {
 		};
 	},
 	
-	prepareCodeOffsets: function(delta, side, lines, intro) {
+	prepareCodeOffsets: function(delta, lines, intro) {
 		var offset = -placer.finetuneY + 0.50 - intro.vspacing * 4.5 - lines * intro.vspacing * intro.verror;
 		var zoffset = placer.finetuneX;
 		var col = 0;
