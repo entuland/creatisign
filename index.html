@@ -1,7 +1,7 @@
 <!doctype html>
 <html>
 <head>
-	<title>CreatiSign Generator V2.1</title>
+	<title>CreatiSign Generator V2.2</title>
 	<meta charset="utf-8" />
 	<style>
 	body {
@@ -30,7 +30,7 @@
 	</style>
 </head>
 <body>
-<h1>CreatiSign Generator - V2.1</h1>
+<h1>CreatiSign Generator - V2.2</h1>
 <p><a href="http://entuland.com/creatisign">Latest live version</a> - <a href="https://github.com/entuland/creatisprites" target="_blank">All versions on GitHub</a></p>
 <p>Select the image you want to convert to CreatiSign code (or drag it onto the file selector), then alter the settings as you please and click "Execute" at the bottom of this page.</p>
 <p>The image will NOT be sent to any server. You can save this page on your desktop and use it offline too, if you're concerned about that :)</p>
@@ -42,7 +42,9 @@
 		<tr><th>Pixel size:</th><td><input type="number" id="pixelsize" min="0" step="0.1" value="2"> <small>(a pixel of size 1 is way smaller than one block, just for reference)</small></td></tr>
 		<tr><th>Spacing tweak (percent):</th><td><input type="number" id="tweak" step="1" value="10"> <small>values lower than 10 start to show the spacing grid between pixels, negative values allowed</small></td></tr>
 		<tr><th>Max decimals after tweaking:</th><td><input type="number" id="decimals" min="0" step="1" value="2"> <small>rounding for the three dependant tags (&lt;size&gt;, &lt;mspace&gt; and &lt;line-height&gt;)</small></td></tr>
-		<tr><th></th><td><label><input type="checkbox" id="shortcolors" checked> Always use short color codes</label> - <small>helps reducing the code size, but can alter the colors of your image</small></td></tr>
+		<tr><th>RGB Gamma correction</th><td><input type="number" id="gamma" min="0.01" step="0.01" value="0.5" max="7.99"> <small>range 0.01 ~ 7.99, preset to 0.5 to work around the current deviance of RGB shades, set this to 1 to disable gamma correction altogether</small></td></tr>
+		<tr><th>Alpha correction</th><td><input type="number" id="alpha" min="0.01" step="0.01" value="1" max="7.99"> <small>range 0.01 ~ 7.99, preset to 1 (disabled) to let you use it only if necessary</small></td></tr>
+		<tr><th></th><td><label><input type="checkbox" id="shortcolors"> Always use short color codes</label> - <small>helps reducing the code size, but can alter the colors of your image</small></td></tr>
 		<tr><th></th><td><label><input type="checkbox" id="autosize" checked> Automatically compute largest possible resolution</label> - <small>necessary for large images but may blur pixel art; if you leave this off and try to convert large images your browser will likely hang or crash, you've been warned!</small></td></tr>
 	</tbody>
 </table>
@@ -59,6 +61,9 @@
 	var textarea = document.querySelector('textarea');
 	var autosize = document.querySelector('#autosize');
 	var charcount = document.querySelector("#charcount");
+	var useshort = false;
+	var gammacorrection = 1;
+	var alphacorrection = 1;
 	var limit = 10000;
 
 	var reader  = new FileReader();
@@ -161,15 +166,56 @@
 	}
 		
 	function readPixel(x, y) {
+		var result = '';
 		var p = context.getImageData(x, y, 1, 1).data;
-		var longValue = rgbaToHex(p[0], p[1], p[2], p[3]);
-		var shortValue = rgbaToHexShort(p[0], p[1], p[2], p[3]);
-		var expanded = expandedHex(shortValue);
-		var useshort = document.querySelector('#shortcolors');
-		if(useshort.checked || expanded == longValue) {
-			return shortValue;
+		
+		var c = {
+			r: p[0],
+			g: p[1],
+			b: p[2],
+			a: p[3]
+		};
+		
+		if(y == 31 && x == 0) {
+			var longValue = rgbaToHex(c.r, c.g, c.b, c.a);
+			var shortValue = rgbaToHexShort(c.r, c.g, c.b, c.a);
+			var expanded = expandedHex(shortValue);
+			if(useshort || expanded == longValue) {
+				result = shortValue;
+			} else {
+				result = longValue;
+			}
+			console.log("before");
+			console.log(c);
+			console.log(result);
 		}
-		return longValue;
+
+		if(gammacorrection != 1) {
+			c.r = 255 * Math.pow(( c.r / 255), gammacorrection);
+			c.g = 255 * Math.pow(( c.g / 255), gammacorrection);
+			c.b = 255 * Math.pow(( c.b / 255), gammacorrection);
+		}
+		
+		if(alphacorrection != 1) {
+			c.a = 255 * Math.pow(( c.a / 255), alphacorrection);
+		}
+				
+		var longValue = rgbaToHex(c.r, c.g, c.b, c.a);
+		var shortValue = rgbaToHexShort(c.r, c.g, c.b, c.a);
+		var expanded = expandedHex(shortValue);
+		if(useshort || expanded == longValue) {
+			result = shortValue;
+		} else {
+			result = longValue;
+		}
+
+		if(y == 31 && x == 0) {
+			console.log("after");
+			console.log(c);
+			console.log(result);
+		}
+
+		return result;
 	}
 
 	function round_number(num, dec) {
@@ -206,9 +252,12 @@
 			matrix[y] = new Array(w);
 			for(var x = 0; x < w; ++x) {
 				matrix[y][x] = readPixel(x, y);
-				if(x > 0 && matrix[y][x] == matrix[y][x-1]
-						|| x == 0 && y > 0 && matrix[y][x] == matrix[y-1][x]) {
-					// no op
+				if(
+						(x == 0 && y > 0 && matrix[y][x] === matrix[y-1][w-1])
+						|| (x > 0 && matrix[y][x] === matrix[y][x-1])
+					) {
+					console.log([x, y]);
+					console.log(matrix[y][x]);
 				} else {
 					addColor(matrix[y][x]);
 				}
@@ -224,6 +273,9 @@
 		textarea.style.display = 'none';
 		charcount.innerHTML = '';
 		preview.src = '';
+		gammacorrection = 1 / parseFloat(document.querySelector("#gamma").value);
+		alphacorrection = 1 / parseFloat(document.querySelector("#alpha").value);
+		useshort = document.querySelector('#shortcolors').checked;
 		var file = document.querySelector('#imagefile').files[0];
 		if (file) {
 			reader.readAsDataURL(file);
@@ -234,6 +286,11 @@
 </script>
 <button onclick="convertImage()">Execute</button>
 <hr>
-<p><small>Changelog<ul><li>V2.1: converted line endings from "\n" to "\r\n"<li>V2: uses alternate font and periods to draw fully opaque pixels, added options to tweak the tag values, added autosize feature, added short hex values feature<li>V1: first version using &lt;mark&gt; technique</ul></small></p>
+<p><small>Changelog
+<ul><li>V2.2: added gamma correction, fixed a bug that created artifacts at the border of the image in some cases
+<li>V2.1: converted line endings from "\n" to "\r\n"
+<li>V2: uses alternate font and periods to draw fully opaque pixels, added options to tweak the tag values, added autosize feature, added short hex values feature
+<li>V1: first version using &lt;mark&gt; technique</ul></small></p>
+<hr>
 </body>
 </html>
