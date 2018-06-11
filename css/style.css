@@ -34,6 +34,10 @@
 		border-radius: 10px 10px 0 0;
 	}
 	
+	#errors:empty {
+		display: none;
+	}
+	
 	.error {
 		background: red !important;
 	}
