@@ -112,6 +112,7 @@
 	position: absolute;
 	z-index: 10000;
 	box-sizing: border-box;
+	cursor: crosshair;
 }
 
 #finetune:hover {
