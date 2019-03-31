@@ -7,6 +7,37 @@ var edit = {
 		edit.initEvents();
 	},
 	
+	exportSettings: function() {
+		return {
+			settingsToggle: edit.settingsToggle.checked,
+			forceWidth: edit.forceWidth.checked,
+			sectionWidth: edit.sectionWidth.value,
+			splitCols: edit.splitCols.value,
+			splitRows: edit.splitRows.value,
+			cropTop: edit.cropTop.value,
+			cropLeft: edit.cropLeft.value,
+			cropRight: edit.cropRight.value,
+			cropBottom: edit.cropBottom.value,
+			transparents: edit.transparents.value,
+		};
+	},
+	
+	importSettings: function(settings) {
+		edit.settingsToggle.checked = settings.settingsToggle;
+		edit.forceWidth.checked = settings.forceWidth;
+		edit.sectionWidth.value = settings.sectionWidth;
+		edit.splitCols.value = settings.splitCols;
+		edit.splitRows.value = settings.splitRows;
+		edit.cropTop.value = settings.cropTop;
+		edit.cropLeft.value = settings.cropLeft;
+		edit.cropRight.value = settings.cropRight;
+		edit.cropBottom.value = settings.cropBottom;
+		edit.transparents.value = settings.transparents;
+		edit.settingsToggleToggled();
+		edit.forceWidthToggled();
+		edit.updateCropping();
+	},
+	
 	initControls: function() {
 		edit.colors = [];
 		edit.settingsToggle = document.querySelector('#showsourcesettings');
@@ -44,9 +75,7 @@ var edit = {
 		edit.cropRight.addEventListener('input', edit.updateCropping);
 		edit.cropLeft.addEventListener('input', edit.updateCropping);
 		edit.cropBottom.addEventListener('input', edit.updateCropping);
-		edit.settingsToggle.addEventListener('click', function() {
-			edit.sourceSettingsTable.style.display = edit.settingsToggle.checked ? "table" : "none";
-		});
+		edit.settingsToggle.addEventListener('click', edit.settingsToggleToggled);
 		edit.rotateLeft.addEventListener('click', function() {
 			edit.rotate('left');
 		});
@@ -74,6 +103,10 @@ var edit = {
 	prepareColors: function() {
 		var remove = edit.transparents.value.toUpperCase();		
 		edit.colors = remove.replace(/[^0-9A-F]+/g, ' ').replace(/\s+/g, ' ').split(' ');
+	},
+	
+	settingsToggleToggled: function() {
+		edit.sourceSettingsTable.style.display = edit.settingsToggle.checked ? "table" : "none";
 	},
 	
 	forceWidthToggled: function() {
