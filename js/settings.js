@@ -133,7 +133,7 @@ var settings = [
 		attributes: {
 			id: 'size',
 			type: 'number',
-			value: '2',
+			value: '3',
 			step: '0.1',
 			title: 'change this value to "zoom" your image; with the default settings a pixel of size 1 will have a width slightly smaller than 1% of a block\'s width; mileage varies changing font and characters',
 		},
@@ -285,8 +285,8 @@ var settings = [
 		attributes: {
 			id: 'mainSpacing',
 			type: 'number',
-			value: '-10',	
-			title: 'values higher than -10% start to show the spacing grid between pixels, the higher the value, the larger the horizontal spacing',
+			value: '-40',	
+			title: 'values higher than -10% (such as -5%) start to show the spacing grid between pixels, the higher the value, the larger the horizontal spacing',
 		},
 		unit: '%',
 		icon: imgsrc['mainspacing.png'],
