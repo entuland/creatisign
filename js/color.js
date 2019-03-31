@@ -28,6 +28,7 @@ var color = {
 		if (rgba.r > 255 || rgba.g > 255 || rgba.b > 255 || rgba.a > 255) {
 			throw 'Invalid color component';
 		}
+		rgba = color.alphaCheck(rgba);
 		var result = '#';		
 		result += rgba.r.toString(16).padStart(2, "0");
 		result += rgba.g.toString(16).padStart(2, "0");
@@ -39,7 +40,8 @@ var color = {
 	},
 
 	rgbaToHexShort: function(rgba) {
-		var result = '';		
+		rgba = color.alphaCheck(rgba);
+		var result = '';
 		rgba.r = color.shortHex(rgba.r);
 		rgba.g = color.shortHex(rgba.g);
 		rgba.b = color.shortHex(rgba.b);
@@ -73,6 +75,13 @@ var color = {
 		rgba.b = parseInt(expanded.substr(4, 2), 16);
 		if(expanded.length == 8) {			
 			rgba.a = parseInt(expanded.substr(6, 2), 16);
+		}
+		return color.alphaCheck(rgba);
+	},
+	
+	alphaCheck: function(rgba) {
+		if(rgba.a == 0) {
+			rgba.r = rgba.g = rgba.b = rgba.a;
 		}
 		return rgba;
 	}
