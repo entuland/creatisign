@@ -310,6 +310,10 @@ var gene = {
 		inter.els.errorMessages.innerHTML = gene.errors.join('<br>');
 	},
 	
+	escapeRegExp: function(text) {
+	  return text.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, '\\$&');
+	},
+	
 	generateOutput: function(w, h, start, delta, slices) {
 		if(start == 0) {
 			gene.prepareCanvas(w, h);
@@ -323,23 +327,60 @@ var gene = {
 		var curhex = '';
 		var rgba = {};
 		var imagedata = inter.els.resultctx.createImageData(1, 1);
+
+		var right_reg = new RegExp("(" + gene.escapeRegExp(inter.els.characters.value) + ")+$", "g");
+		var left_reg = new RegExp("^(" + gene.escapeRegExp(inter.els.characters.value) + ")+", "g");
+
 		for(y = start; y < h; ++y) {
 			m[y] = new Array(w);
 			var line = '';
+			var line_intro = "";
+			var start_rgba = {};
 			for(var x = 0; x < w; ++x) {
 				m[y][x] = gene.readPixel(x, y);
 				if(!(x == 0 && y > start && m[y][x] === m[y-1][w-1]) && !(x > 0 && m[y][x] === m[y][x-1])) {
 					// only set the color if it differs from the previous one
 					curhex = m[y][x];
-					line += '<' + curhex + '>';
+					if(x == 0) {
+						line_intro = '<' + curhex + '>';						
+					} else {
+						line += '<' + curhex + '>';
+					}
 				}
 				line += inter.els.characters.value;
 				rgba = color.hexToRgba(curhex);
+				if(x == 0) {
+					start_rgba = rgba;
+				}
 				imagedata.data[0] = rgba.r;
 				imagedata.data[1] = rgba.g;
 				imagedata.data[2] = rgba.b;
 				imagedata.data[3] = rgba.a;
 				inter.els.resultctx.putImageData(imagedata, x, y);
+			}
+			if(rgba.a == 0 && inter.els.align.value == "left") {
+				line = line_intro + line.replace(right_reg, "");
+			} else if(start_rgba.a == 0 && inter.els.align.value == "right") {
+				line = line.replace(left_reg, "");
+			} else if(start_rgba.a == 0 && rgba.a == 0 && inter.els.align.value == "") {
+				var left_matches = line.match(left_reg) || [];
+				var right_matches = line.match(right_reg) || [];
+				if(left_matches.length > 0 && right_matches.length > 0) {
+					var min = Math.min(left_matches[0].length, right_matches[0].length);
+					if(min < line.length) {
+						line = line.substring(min, line.length - min);
+					} else {
+						line = "";
+					}
+					if(min < left_matches[0].length) {
+						line = line_intro + line;						
+					}
+				}
+			} else {
+				line = line_intro + line;
+			}
+			if(line == "") {
+				line = inter.els.characters.value;
 			}
 			offs = gene.prepareCodeOffsets(delta, y, intro);
 			if(output.length + line.length + offs.output.length > limit) {
@@ -349,7 +390,7 @@ var gene = {
 			output += line + '\r\n';
 		}
 		return {
-			output: offs.output + output.replace(/\r\n$/, ""),
+			output: offs.output + output.replace(/(<#0000>)*\r\n$/, ""),
 			start: start,
 			delta: delta,
 			w: w,
