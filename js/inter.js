@@ -9,6 +9,7 @@ var inter = {
 	init: function() {
 		inter.initializeElements();
 		placer.init(document.querySelector('#placer-container'));
+		edit.init();
 		inter.loadSettings();
 		inter.updateSettingsMode();
 		inter.updateShift();
@@ -18,7 +19,6 @@ var inter = {
 		inter.reset.addEventListener('click', inter.checkReset);
 		inter.initInfo();
 		inter.assignFurtherControls();
-		edit.init();
 		document.querySelector('#import').addEventListener('click', inter.importSettings);
 		document.querySelector('#export').addEventListener('click', inter.exportSettings);
 	},
@@ -68,18 +68,11 @@ var inter = {
 		
 		if(inter.firstReset) {
 			clearTimeout(inter.checkReset.timeout);
-			window.localStorage.clear();
-			var mode = inter.els.settingsMode.value;
-			inter.initializeElements();
-			inter.els.settingsMode.value = mode;
-			inter.storeSettings();
-			inter.updateSettingsMode();
+			inter.loadDefaultSettings();
 			inter.firstReset = false;
 			inter.reset.innerText = 'Reset done!';
 			inter.reset.style.background = '#0F0';
 			inter.reset.style.color = '#000';
-			inter.updateShift();
-			inter.updateDisposition();
 			inter.checkReset.timeout = setTimeout(internalReset, 2000);
 		} else {
 			clearTimeout(inter.checkReset.timeout);
@@ -89,6 +82,17 @@ var inter = {
 			inter.reset.style.color = '#FFF';
 			inter.checkReset.timeout = setTimeout(internalReset, 2000);
 		}
+	},
+	
+	loadDefaultSettings: function() {
+		window.localStorage.clear();
+		var mode = inter.els.settingsMode.value;
+		inter.initializeElements();
+		inter.els.settingsMode.value = mode;
+		inter.storeSettings();
+		inter.updateSettingsMode();
+		inter.updateShift();
+		inter.updateDisposition();
 	},
 	
 	assignFurtherControls: function() {
@@ -145,10 +149,16 @@ var inter = {
 		}
 		output.signs = placer.storePositions();
 		output.edit = edit.exportSettings();
+		window.localStorage.setItem("version", creatisign_settings_version);
 		return output;
 	},
 	
 	loadSettings: function(override) {
+		var storedVersion = window.localStorage.getItem("version");
+		if(storedVersion !== creatisign_settings_version) {
+			inter.loadDefaultSettings();
+			return;
+		}
 		for(var e in inter.els) {
 			if(e == 'fileSelector') {
 				continue;
