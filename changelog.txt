@@ -3,6 +3,12 @@ Proudly made in Sardinia (Italy) by Entuland (entuland@gmail.com)
 
 Changelog:
 
+V3.4:
+	- added import/export facilities for settings
+	- got rid of all useless transparent pixels to gain some resolution in certain cases
+	- refactored the UI a little
+	- altered default size and main spacing to improve quality at a distance
+
 V3.3:
 	- added whole new section for source editing: cropping, rotation, mirroring, source-width control, splitting image into multiple sections to be processed separately
 	- moved most of the info into dedicated overlay
