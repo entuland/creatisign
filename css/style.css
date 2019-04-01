@@ -127,29 +127,37 @@
 		text-align: center;
 		border-top: 1px solid black;
 		box-shadow: 0 -2px 2px #999;
-		padding-top: 5px;
+		padding: 10px;
 		background: #DDD;
 		box-sizing: border-box;
+		display: grid;
+		-grid-template-columns: 1fr 1fr 1fr 1fr 1fr 2fr 1fr;
+		grid-column-gap: 10px;
+	}
+	
+	#commands > * {
+		grid-row: 1;
 	}
 
 	#commands button {
-		font-variant: capitalize;
+		text-transform: uppercase;
 		background-color: #AFA;
-		padding: 5px;
 		border-radius: 3px;
-		font-size: 130%;
+		font-size: 110%;
 		border: 1px solid black;
 		box-shadow: 2px 2px 2px #999;
 		cursor: pointer;
-		vertical-align: top;
+	}
+	
+	#commands div {
+		text-align: right;
 	}
 
 	#fileSelector {
-		height: 80%;
-		width: 50%;
+		height: 100%;
+		width: 100%;
 		background: #FF0;
 		border: 1px solid black;
-		vertical-align: top;
 	}
 
 	.wrapper {
@@ -258,6 +266,10 @@
 		line-height: 0;
 	}
 	
+	button#info-button {
+		background: #faa;
+	}
+	
 	.splitsection {
 		display: inline-block;
 		border: 1px solid red;
@@ -284,11 +296,13 @@
 	}
 	
 	a.rounded.shadow {
-		background: yellow;
+		background: #afa;
 		padding: 3px;
 		font-weight: bolder;
 		color: black;
 		text-decoration: none;
+		display: inline-block;
+		text-align: center;
 	}
 
 	.cover {

@@ -3,23 +3,33 @@
 <head>
 	<title>CreatiSign Generator V3.3</title>
 	<meta charset="utf-8" />
-	<link href="css/placer.css?74746738374687364" rel="stylesheet">
-	<link href="css/style.css?747467383746873648" rel="stylesheet">
-	<script src="js/imgsrc.js?74746738374687364"></script>
-	<script src="js/settings.js?74746738374687364"></script>
-	<script src="js/placer.js?74746738374687364"></script>
-	<script src="js/edit.js?74746738374687364"></script>
-	<script src="js/inter.js?74746738374687364"></script>
-	<script src="js/color.js?74746738374687364"></script>
-	<script src="js/timeoutlooper.js?74746738374687364"></script>
-	<script src="js/gene.js?74746738374687364"></script>
+	<link href="css/placer.css?827684376583456" rel="stylesheet">
+	<link href="css/style.css?827684376583456" rel="stylesheet">
+	<script src="js/imgsrc.js?827684376583456"></script>
+	<script src="js/settings.js?827684376583456"></script>
+	<script src="js/placer.js?827684376583456"></script>
+	<script src="js/edit.js?827684376583456"></script>
+	<script src="js/inter.js?827684376583456"></script>
+	<script src="js/color.js?827684376583456"></script>
+	<script src="js/timeoutlooper.js?827684376583456"></script>
+	<script src="js/gene.js?827684376583456"></script>
 </head>
 <body>
 	<div id="main">
 		<div id="interface"></div>
 		<div id="output">
-			<h1 id="heading">CreatiSign Generator V3.3</h1>
-			<p><a href="http://entuland.com/creatisign">Latest live version</a> - <a href="https://github.com/entuland/creatisprites" target="_blank">All versions on GitHub</a></p> <button class="rounded shadow" id="info-button">Help! What's this?</button> <a class="rounded shadow" target="_blank" href="http://entuland.com/en/support-entuland">Want to support me?</a> <a class="rounded shadow" style="background: #faa" target="_blank" href="http://entuland.com/creaticount">New! CreatiCount Tool!</a><hr>
+			<h1 id="heading">CreatiSign Generator V3.4</h1>
+			<p>
+				<button class="rounded shadow" id="info-button">HELP / INFO</button>
+				<a class="rounded shadow" href="https://www.twitch.tv/entuland/videos/all" target="_blank">Twitch Tutorials</a>
+				<a class="rounded shadow" href="https://github.com/entuland/creatisign" target="_blank">GitHub Repo</a>
+				<a class="rounded shadow" href="http://entuland.com/creatisign">Latest Live Version</a>
+			</p>
+			<p>
+				<a class="rounded shadow" target="_blank" href="http://entuland.com/en/support-entuland">Want to support me?<br><small>(info about entuland)</small></a>
+				<a class="rounded shadow" target="_blank" href="http://entuland.com/creatisprites">CreatiSprites<br><small>(sprites picker)</small></a>
+				<a class="rounded shadow" target="_blank" href="http://entuland.com/creaticount">CreatiCount<br><small>(material counter)</small></a>
+			</p>
 			<figure class="resultsPreview">
 				<figcaption>Results preview</figcaption>
 				<canvas id="resultsPreview"></canvas>
@@ -75,8 +85,11 @@
 		</div>
 		<div id="placer-container"></div>
 		<div id="commands">
-			<button id="reset" title="Click twice to really reset. Only resets generation settings (left-hand-side settings)">Reset settings?</button>
-			Select or drag image here: <input type="file" id="fileSelector">
+			<div>Settings:</div>
+			<button id="export" title="Export all settings">Export</button>
+			<button id="import" title="Import all settings">Import</button>
+			<button id="reset" title="Click twice to really reset. Only resets generation settings (left-hand-side settings)">Reset?</button>
+			<div>Select or drag image here:</div><input type="file" id="fileSelector">
 			<button id="execute">Execute</button>
 		</div>
 	</div>
@@ -106,6 +119,7 @@
 		<p><a href="http://steamcommunity.com/app/280790/discussions/3/1479857071263583178/" target="_blank">CreatiSign Generator discussion</a> (on Steam forum), <a href="http://entuland.com/creatisign/changelog.txt" target="_blank">Changelog</a> (txt file)</p>
 		
 		<p>Previous versions:
+			<a href="http://entuland.com/creatisign/v3.3" target="_blank">V3.3</a>,
 			<a href="http://entuland.com/creatisign/v3.2" target="_blank">V3.2</a>,
 			<a href="http://entuland.com/creatisign/v3.1.beta" target="_blank">V3.1.BETA</a>,
 			<a href="http://entuland.com/creatisign/v3" target="_blank">V3</a>,

@@ -19,6 +19,25 @@ var inter = {
 		inter.initInfo();
 		inter.assignFurtherControls();
 		edit.init();
+		document.querySelector('#import').addEventListener('click', inter.importSettings);
+		document.querySelector('#export').addEventListener('click', inter.exportSettings);
+	},
+	
+	importSettings: function() {
+		var input = prompt("Paste settings here and confirm:");
+		var settings = false;
+		try {
+			settings = JSON.parse(input.replace(/^\s*(.*)\s*$/g, "$1")); 
+		} catch(e) {
+			alert('JSON error: ' + e.name + ' - ' + e.message);
+		}
+		if(settings) {
+			inter.loadSettings(settings);
+		}
+	},
+	
+	exportSettings: function() {
+		prompt("Copy settings from there:", JSON.stringify(inter.storeSettings()));
 	},
 	
 	initInfo: function() {
@@ -39,7 +58,7 @@ var inter = {
 	checkReset: function() {
 		var internalReset = function() {
 			inter.firstReset = false;
-			inter.reset.innerText = 'Reset settings?';
+			inter.reset.innerText = 'Reset?';
 			inter.reset.style.background = '#AFA';
 			inter.reset.style.color = '#000';
 		}
@@ -71,7 +90,6 @@ var inter = {
 	
 	assignFurtherControls: function() {
 		inter.els.fileSelector = document.querySelector('#fileSelector');
-		inter.els.placement = document.querySelector('#placementPreview');
 
 		inter.els.cover = document.querySelector('#cover');
 		inter.els.errorMessages = document.querySelector('#errors');
@@ -98,6 +116,7 @@ var inter = {
 	},
 	
 	storeSettings: function() {
+		var output = {};
 		for(var e in inter.els) {
 			if(e == 'fileSelector') {
 				continue;
@@ -117,19 +136,23 @@ var inter = {
 				} else {
 					value = element.value;
 				}
+				output[e] = value;
 				window.localStorage.setItem(e, value);
 			}
 		}
+		output.signs = placer.storePositions();
+		output.edit = edit.exportSettings();
+		return output;
 	},
 	
-	loadSettings: function() {
+	loadSettings: function(override) {
 		for(var e in inter.els) {
 			if(e == 'fileSelector') {
 				continue;
 			}
 			var element = inter.els[e];
 			if(['INPUT', 'SELECT'].indexOf(element.tagName) !== -1) {
-				var value = window.localStorage.getItem(e);
+				var value = override && override[e] || window.localStorage.getItem(e);
 				if(value && element.getAttribute('type') === 'checkbox') {
 					element.checked = value === 'on';
 				} else if(value) {
@@ -137,7 +160,10 @@ var inter = {
 				}
 			}
 		}
-		inter.updateDisposition();
+		inter.updateDisposition(override && override.signs);
+		if(override && override.edit) {
+			edit.importSettings(override.edit);
+		}
 	},
 	
 	initializeElements: function() {
@@ -242,10 +268,10 @@ var inter = {
 		inter.updateShift.timeout = setTimeout(placer.shift, 100);
 	},
 
-	updateDisposition: function() {
+	updateDisposition: function(override) {
 		clearTimeout(inter.updateDisposition.timeout);
 		inter.updateDisposition.timeout = setTimeout(function() {
-			placer.arrange(inter.els.disposition.value);
+			placer.arrange(inter.els.disposition.value, override);
 		}, 100);
 	},
 

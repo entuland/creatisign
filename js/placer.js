@@ -222,11 +222,12 @@ var placer = {
 			positions[i] = [sign.rx, sign.ry];
 		}
 		window.localStorage.setItem('signs', JSON.stringify(positions));
+		return positions;
 	},
 	
-	loadPositions: function() {
+	loadPositions: function(override) {
 		try {
-			var positions = JSON.parse(window.localStorage.getItem('signs', '[]'));
+			var positions = override || JSON.parse(window.localStorage.getItem('signs', '[]'));
 			for(var i = 0; i < placer.signs.length; ++i) {
 				if(i >= positions.length) {
 					break;
@@ -325,7 +326,7 @@ var placer = {
 		}
 	},
 	
-	arrange: function(mode) {
+	arrange: function(mode, override) {
 		switch(mode) {
 			case 'horizontal':
 				placer.horizontal();
@@ -349,7 +350,7 @@ var placer = {
 				placer.grid('bottom');
 				break;
 			default:
-				placer.loadPositions();
+				placer.loadPositions(override);
 		}
 		placer.consistencyCheck();
 	},
