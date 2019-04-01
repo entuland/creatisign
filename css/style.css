@@ -8,18 +8,9 @@
 		padding-bottom: 50px;
 	}
 
-	#textareas textarea {
-		background: yellow;
-	}
-
 	textarea {
 		width: 100%;
 		height: 5em;
-	}
-
-	#textareas {
-		margin-left: 20%;
-		margin-right: 20%;
 	}
 
 	#errors {
@@ -72,7 +63,33 @@
 		max-width: 100%;
 		max-height: 300px;
 	}
+	
+	#textareas, figure {
+		background: #AFA;
+		margin: 10px 0;
+		padding: 10px;
+	}
+	
+	figcaption {
+		font-weight: bolder;
+		text-transform: uppercase;
+		margin-bottom: 10px;
+	}
 
+	#textareas {
+		padding: 30px;
+	}
+	
+	#textareas textarea {
+		display: block;
+		background: yellow;
+		width: 50%;
+	}
+	
+	#textareas > div:not(:first-child) {
+		margin-top: 30px;
+	}
+		
 	#output img, canvas {
 		background: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAwAAAAMCAYAAABWdVznAAAAH0lEQVQokWNYtGjRf2w4ISEBK2YYkRpwSeAyaERqAABq/mkwVExPHAAAAABJRU5ErkJggg==') top left repeat;
 	}
@@ -131,7 +148,7 @@
 		background: #DDD;
 		box-sizing: border-box;
 		display: grid;
-		-grid-template-columns: 1fr 1fr 1fr 1fr 1fr 2fr 1fr;
+		grid-template-columns: repeat(5, auto) 1fr auto;
 		grid-column-gap: 10px;
 	}
 	
@@ -231,17 +248,54 @@
 		font-size: 1em;
 	}
 	
-	#edit-controls table td {
-		text-align: right;
+	#edit-controls > label {
+		margin: 0;
 	}
 	
-	#edit-controls table label,
-	#edit-controls table button {
+	#sourcesettings [type=number], #sourcesettings textarea {
+		display: block;
 		width: 100%;
 	}
 	
-	#edit-controls table input {
-		width: 4em;
+	#sourcesettings {
+		display: grid;
+		grid-template-columns: repeat(6, auto);
+		grid-template-rows: repeat(6, auto);
+		width: 100%;
+		max-width: 500px;
+	}
+	
+	#sourcesettings > :nth-child(n+1):nth-child(-n+4) {
+		grid-column: span 3;
+	}
+
+	#sourcesettings > :nth-child(n+1):nth-child(-n+2) {
+		grid-row: 1;
+	}
+
+	#sourcesettings > :nth-child(n+3):nth-child(-n+4) {
+		grid-row: 2;
+	}
+		
+	#sourcesettings > :nth-child(n+5):nth-child(-n+13) {
+		grid-column: span 2;
+	}
+	
+	#sourcesettings > :nth-child(n+5):nth-child(-n+7) {
+		grid-row: 3;
+	}
+	
+	#sourcesettings > :nth-child(n+8):nth-child(-n+10) {
+		grid-row: 4;
+	}
+	
+	#sourcesettings > :nth-child(n+11):nth-child(-n+13) {
+		grid-row: 5;
+	}
+	
+	#sourcesettings > :nth-child(14) {
+		grid-column: span 6;
+		grid-row: 6;
 	}
 	
 	#cropcontainer {

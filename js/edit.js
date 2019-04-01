@@ -106,14 +106,14 @@ var edit = {
 	},
 	
 	settingsToggleToggled: function() {
-		edit.sourceSettingsTable.style.display = edit.settingsToggle.checked ? "table" : "none";
+		edit.sourceSettingsTable.style.display = edit.settingsToggle.checked ? "grid" : "none";
 	},
 	
 	forceWidthToggled: function() {
 		if(edit.forceWidth.checked) {
-			edit.sectionWidth.parentNode.style.display = 'inline-block';
+			edit.sectionWidth.parentNode.style.visibility = 'visible';
 		} else {
-			edit.sectionWidth.parentNode.style.display = 'none';
+			edit.sectionWidth.parentNode.style.visibility = 'hidden';
 		}
 	},
 	

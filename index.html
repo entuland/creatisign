@@ -30,7 +30,7 @@
 				<a class="rounded shadow" target="_blank" href="http://entuland.com/creatisprites">CreatiSprites<br><small>(sprites picker)</small></a>
 				<a class="rounded shadow" target="_blank" href="http://entuland.com/creaticount">CreatiCount<br><small>(material counter)</small></a>
 			</p>
-			<figure class="resultsPreview">
+			<figure class="resultsPreview rounded shadow">
 				<figcaption>Results preview</figcaption>
 				<canvas id="resultsPreview"></canvas>
 			</figure>
@@ -43,7 +43,7 @@
 				<canvas id="editcanvas"></canvas>
 			</figure>
 			<div id="errors" class="notices"></div>
-			<figure class="sourcePreview">
+			<figure class="sourcePreview rounded shadow">
 				<figcaption>Source preview</figcaption>
 				<div id="cropcontainer">
 					<img id="sourcePreview">
@@ -53,35 +53,24 @@
 			<div id="edit-controls">
 				<label class="rounded shadow" title="Show or hide source settings (they will be used in any case)"><input type="checkbox" id="showsourcesettings">Show source settings</label>
 				<p id="sectionnotice"></p>
-				<table id="sourcesettings" style="display: none">
-					<tr>
-						<td colspan=3><label class="rounded shadow" title="Enable this to get a numeric box to specify the width of the source section"><input type="checkbox" id="forcewidth">Force source section width</label></td>
-						<td colspan=3><label class="rounded shadow" style="display: none" title="The source will be scaled to this width before getting processed (remember that the autosize flag in the generation options may still give you a different amount of pixels, disable it if you know what it does)">Forced width: <input type="number" id="sectionwidth" value="100" min="1" step="1"></label></td>
-					</tr>					<tr>
-						<td colspan=3><label class="rounded shadow" title="Split the source in multiple columns for processing sections separately">Cols: <input type="number" id="splitcolumns" value="1"  min="1" step="1"></label></td>
-						<td colspan=3><label class="rounded shadow" title="Split the source in multiple rows for processing sections separately">Rows: <input type="number" id="splitrows" value="1"  min="1" step="1"></label></td>
-					</tr>
-					<tr>
-						<td colspan=2><button class="rounded shadow" id="rotateleft" title="Rotate the whole source image 90 degrees counterclockwise">Rotate left</button></td>
-						<td colspan=2><label class="rounded shadow">Crop top: <input type="number" id="croptop" value="0"  min="0" step="1"></label></td>
-						<td colspan=2><button class="rounded shadow" id="rotateright" title="Rotate the whole source image 90 degrees clockwise">Rotate right</button></td>
-					</tr>
-					<tr>
-						<td colspan=2><label class="rounded shadow">Crop left: <input type="number" id="cropleft" value="0"  min="0" step="1"></label></td>
-						<td colspan=2><label class="rounded shadow" title="Change this value to give equal cropping on all sides">Crop all: <input type="number" id="cropall" value=""  min="0" step="1"></label></td>
-						<td colspan=2><label class="rounded shadow">Crop right: <input type="number" id="cropright" value="0"  min="0" step="1"></label></td>
-					</tr>
-					<tr>
-						<td colspan=2><button class="rounded shadow" id="mirrorhorizontal" title="Flip the image horizontally (left-right)">Mirror horizontal</button></td>
-						<td colspan=2><label class="rounded shadow">Crop bottom: <input type="number" id="cropbottom" value="0"  min="0" step="1"></label></td>
-						<td colspan=2><button class="rounded shadow" id="mirrorvertical" title="Flip the image vertically (top-bottom)">Mirror vertical</button></td>
-					</tr>
-					<tr>
-						<td colspan=6><label class="rounded shadow" title="Insert one or more hex values for colors to convert to transparent, separate them as you better prefer. Imprecise feature, use a real image editing program for better control">Transparent colors:<br><textarea id="transparents"></textarea></label></td>
-					</tr>
-				</table>
+				<div id="sourcesettings" style="display: none">
+					<label class="rounded shadow" title="Enable this to get a numeric box to specify the width of the source section"><input type="checkbox" id="forcewidth">Force source section width</label>
+					<label class="rounded shadow" style="visibility: hidden" title="The source will be scaled to this width before getting processed (remember that the autosize flag in the generation options may still give you a different amount of pixels, disable it if you know what it does)">Forced width: <input type="number" id="sectionwidth" value="100" min="1" step="1"></label>
+					<label class="rounded shadow" title="Split the source in multiple columns for processing sections separately">Cols: <input type="number" id="splitcolumns" value="1"  min="1" step="1"></label>
+					<label class="rounded shadow" title="Split the source in multiple rows for processing sections separately">Rows: <input type="number" id="splitrows" value="1"  min="1" step="1"></label>
+					<button class="rounded shadow" id="rotateleft" title="Rotate the whole source image 90 degrees counterclockwise">Rotate left</button>
+					<label class="rounded shadow">Crop top: <input type="number" id="croptop" value="0"  min="0" step="1"></label>
+					<button class="rounded shadow" id="rotateright" title="Rotate the whole source image 90 degrees clockwise">Rotate right</button>
+					<label class="rounded shadow">Crop left: <input type="number" id="cropleft" value="0"  min="0" step="1"></label>
+					<label class="rounded shadow" title="Change this value to give equal cropping on all sides">Crop all: <input type="number" id="cropall" value=""  min="0" step="1"></label>
+					<label class="rounded shadow">Crop right: <input type="number" id="cropright" value="0"  min="0" step="1"></label>
+					<button class="rounded shadow" id="mirrorhorizontal" title="Flip the image horizontally (left-right)">Mirror horizontal</button>
+					<label class="rounded shadow">Crop bottom: <input type="number" id="cropbottom" value="0"  min="0" step="1"></label>
+					<button class="rounded shadow" id="mirrorvertical" title="Flip the image vertically (top-bottom)">Mirror vertical</button>
+					<label class="rounded shadow" title="Insert one or more hex values for colors to convert to transparent, separate them as you better prefer. Imprecise feature, use a real image editing program for better control">Transparent colors:<br><textarea id="transparents"></textarea></label>
+				</div>
 			</div>
-			<div id="textareas"></div>
+			<div id="textareas" class="rounded shadow"></div>
 		</div>
 		<div id="placer-container"></div>
 		<div id="commands">

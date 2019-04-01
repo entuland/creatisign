@@ -244,7 +244,7 @@ var gene = {
 		var row = result.row;
 		var container = document.createElement('div');
 		inter.els.textareas.appendChild(container);
-		container.innerHTML = '<hr><strong>Arc Sign #' + (delta + 1) + '</strong>, ';
+		container.innerHTML = '<strong>Arc Sign #' + (delta + 1) + '</strong>, ';
 		container.innerHTML += '' + output.length + ' chars, sizes (' + w + ', ' + h + ')';
 		var placeat = 'Placement: ';
 		switch(true) {
