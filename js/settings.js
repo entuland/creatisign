@@ -1,6 +1,6 @@
 'use strict';
 
-var creatiVersion = '3.3';
+var creatisign_settings_version = '3.4';
 
 var settings = [
 
