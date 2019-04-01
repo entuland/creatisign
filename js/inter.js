@@ -26,6 +26,9 @@ var inter = {
 	importSettings: function() {
 		var input = prompt("Paste settings here and confirm:");
 		var settings = false;
+		if(!input) {
+			return;
+		}
 		try {
 			settings = JSON.parse(input.replace(/^\s*(.*)\s*$/g, "$1")); 
 		} catch(e) {
