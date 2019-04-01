@@ -252,6 +252,11 @@
 		margin: 0;
 	}
 	
+	#sectionnotice {
+		font-weight: bolder;
+		text-transform: uppercase;
+	}
+	
 	#sourcesettings [type=number], #sourcesettings textarea {
 		display: block;
 		width: 100%;
