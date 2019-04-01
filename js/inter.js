@@ -149,6 +149,7 @@ var inter = {
 		}
 		output.signs = placer.storePositions();
 		output.edit = edit.exportSettings();
+		output.version = creatisign_settings_version;
 		window.localStorage.setItem("version", creatisign_settings_version);
 		return output;
 	},

@@ -219,7 +219,9 @@ var placer = {
 		var positions = [];
 		for(var i = 0; i < placer.signs.length; ++i) {
 			var sign = placer.signs[i];
-			positions[i] = [sign.rx, sign.ry];
+			if(!sign.isOff()) {
+				positions[i] = [sign.rx, sign.ry];				
+			}
 		}
 		window.localStorage.setItem('signs', JSON.stringify(positions));
 		return positions;
@@ -233,7 +235,11 @@ var placer = {
 					break;
 				}
 				var sign = placer.signs[i];
-				sign.moveRelative(positions[i][0], positions[i][1]);
+				if(positions[i]) {
+					sign.moveRelative(positions[i][0], positions[i][1]);					
+				} else {
+					sign.sendOff();
+				}
 			}
 		} catch (e) {
 			// no-op
