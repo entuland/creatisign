@@ -3,6 +3,10 @@ Proudly made in Sardinia (Italy) by Entuland (entuland@gmail.com)
 
 Changelog:
 
+V3.4.2:
+	- removed the warning about the default size and main spacing (didn't really hit the repo, only affected the live version IIRC)
+	- hopefully fixed the code that optimizes transparent pixels
+
 V3.4:
 	- added import/export facilities for settings
 	- got rid of all useless transparent pixels to gain some resolution in certain cases

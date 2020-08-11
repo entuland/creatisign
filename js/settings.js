@@ -1,6 +1,6 @@
 'use strict';
 
-var creatisign_settings_version = '3.4';
+var creatisign_settings_version = '3.4.2';
 
 var settings = [
 
@@ -133,7 +133,7 @@ var settings = [
 		attributes: {
 			id: 'size',
 			type: 'number',
-			value: '3',
+			value: '2',
 			step: '0.1',
 			title: 'Change this value to "zoom" your image in or out.\nA pixel of size 1 will have a width slightly smaller than 1% of a block\'s width.\nActual perceived size depends on spacing, font and characters.',
 		},
@@ -285,7 +285,7 @@ var settings = [
 		attributes: {
 			id: 'mainSpacing',
 			type: 'number',
-			value: '-40',	
+			value: '-10',	
 			title: 'Values higher than -10% (such as -5%) start to show the spacing grid between pixels.\nThe higher the value, the larger the spacing.\nValues lower than 10% cause overlapping but give higher quality from a distance.',
 		},
 		unit: '%',

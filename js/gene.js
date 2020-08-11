@@ -358,8 +358,9 @@ var gene = {
 				imagedata.data[3] = rgba.a;
 				inter.els.resultctx.putImageData(imagedata, x, y);
 			}
+			
 			if(rgba.a == 0 && inter.els.align.value == "left") {
-				line = line_intro + line.replace(right_reg, "");
+				line = line.replace(right_reg, "");
 			} else if(start_rgba.a == 0 && inter.els.align.value == "right") {
 				line = line.replace(left_reg, "");
 			} else if(start_rgba.a == 0 && rgba.a == 0 && inter.els.align.value == "") {
@@ -372,22 +373,25 @@ var gene = {
 					} else {
 						line = "";
 					}
-					if(min < left_matches[0].length) {
-						line = line_intro + line;						
-					}
 				}
-			} else {
-				line = line_intro + line;
 			}
 			if(line == "") {
 				line = inter.els.characters.value;
 			}
 			offs = gene.prepareCodeOffsets(delta, y, intro);
+			line = line_intro + line + '\r\n';
+			
+			var stray_transparent = output.substr(output.length - 9) === "<#0000>\r\n";
+			var colorcode_beginning = line.substring(0, inter.els.characters.value.length) !== inter.els.characters.value;
+			if(stray_transparent && colorcode_beginning) {
+				output = output.replace(/(<#0000>)*\r\n$/, "\r\n");
+			}
+			
 			if(output.length + line.length + offs.output.length > limit) {
 				offs = gene.prepareCodeOffsets(delta, y - 1, intro);
 				break;
 			}
-			output += line + '\r\n';
+			output += line;
 		}
 		return {
 			output: offs.output + output.replace(/(<#0000>)*\r\n$/, ""),
@@ -488,7 +492,6 @@ var gene = {
 		if(zoffset < gene.zoffset_min || zoffset > gene.zoffset_max) {
 			gene.errors.push('&lt;zoffset&gt; out of range');
 		}
-
 		
 		return {
 			output: intro.incipit + '<offset=' + offset + '><zoffset=' + zoffset + '>',
