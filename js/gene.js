@@ -379,10 +379,16 @@ var gene = {
 				line = inter.els.characters.value;
 			}
 			offs = gene.prepareCodeOffsets(delta, y, intro);
-			line = line_intro + line + '\r\n';
 			
 			var stray_transparent = output.substr(output.length - 9) === "<#0000>\r\n";
 			var colorcode_beginning = line.substring(0, inter.els.characters.value.length) !== inter.els.characters.value;
+			
+			if(colorcode_beginning && line_intro !== "") {
+				line += '\r\n';
+			} else {
+				line = line_intro + line + '\r\n';
+			}
+			
 			if(stray_transparent && colorcode_beginning) {
 				output = output.replace(/(<#0000>)*\r\n$/, "\r\n");
 			}
