@@ -1,5 +1,5 @@
 # CreatiSign Generator
-Arc Sign Codes generator for [Creativerse](https://store.steampowered.com/app/280790/Creativerse/), free to play on Steam.
+Arc Sign Codes generator for [Creativerse](https://store.steampowered.com/app/280790/Creativerse/).
 
 This tool allows for converting images into codes that can be pasted into Arc Signs - that is, importing images inside Creativerse.
 
