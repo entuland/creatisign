@@ -6,5 +6,3 @@ This tool allows for converting images into codes that can be pasted into Arc Si
 Live latest version on [my website](http://entuland.com/creatisign)
 
 Discussion about CreatiSign Generator on the [Steam Forums](https://steamcommunity.com/app/280790/discussions/3/1479857071263583178/)
-
-If you like my contributions you may consider reading http://entuland.com/en/support-entuland
